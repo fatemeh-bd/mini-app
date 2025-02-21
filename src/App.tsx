@@ -8,11 +8,24 @@ const App = () => {
   const [user, setUser] = useState<{ first_name?: string } | null>(null);
 
   useEffect(() => {
-    WebApp.ready();
-    WebApp.expand();
-    setUser(WebApp.initDataUnsafe.user);
-    document.body.style.backgroundColor = WebApp.themeParams.bg_color;
-    // document.body.style.color = WebApp.themeParams.text_color;
+      {/*  @ts-ignore */}
+    if (window.WebApp) {
+      {/*  @ts-ignore */}
+
+      window.WebApp.ready();
+      {/*  @ts-ignore */}
+
+      window.WebApp.expand();
+      {/*  @ts-ignore */}
+
+      setUser(window.WebApp.initDataUnsafe.user);
+      {/*  @ts-ignore */}
+
+      document.body.style.backgroundColor = window.WebApp.themeParams.bg_color;
+      // document.body.style.color = window.WebApp.themeParams.text_color;
+    } else {
+      console.error("WebApp is not loaded");
+    }
   }, []);
   
   return (
