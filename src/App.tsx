@@ -38,6 +38,7 @@ const App = () => {
     // }}
   >
     <h1 style={{color:"red"}}>وب اپ تلگرام</h1>
+    <p>{JSON.stringify(user)}</p>
     {user ? <p>سلام {user?.first_name}!</p> : <p>در حال دریافت اطلاعات...</p>}
   </div>  
   )
