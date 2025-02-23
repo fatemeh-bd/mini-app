@@ -10,11 +10,11 @@ const TopBar = () => {
     <div className="flex justify-between">
       {userInfo.first_name && (
         <Badge className="flex gap-x-2 items-center">
-          {userInfo.first_name.slice(0, 18)}
           <img
             src={userInfo.photo_url}
             className="size-7 object-fill rounded-full"
           />
+          {userInfo.first_name.slice(0, 18)}
         </Badge>
       )}
       <div className="flex items-center gap-x-4">
