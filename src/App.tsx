@@ -6,6 +6,7 @@ import { UserInfo_type } from "./store/types";
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
 import useEmojiStore from "./store/emojiStore";
+import axios from "axios";
 
 const App = () => {
   const { setUserInfo } = useUserStore();
@@ -14,9 +15,21 @@ const App = () => {
     if (WebApp) {
       WebApp.ready();
       WebApp.expand();
-      const emojiId = "2369285173";
-      // @ts-ignore
-      setEmojiSplash(WebApp?.emoji(emojiId));
+      const fetchEmoji = async () => {
+        try {
+          const emojiId = "5368324170671202286"; // Replace with a valid emoji ID
+          const response = await axios.get(
+            `https://api.telegram.org/bot<8123335155:AAE2DjLwuOeEUiLliQzH_XdvfzSnzzr-kNI
+>/getCustomEmojiStickers?custom_emoji_ids=${emojiId}`
+          );
+          const emojiUrl = response.data.result[0].thumb.file_id; // Example: Get the emoji URL
+          setEmojiSplash(emojiUrl); // Set the emoji URL or data
+        } catch (error) {
+          console.error("Failed to fetch emoji:", error);
+        }
+      };
+
+      fetchEmoji();
       if (WebApp.initDataUnsafe) {
         if (WebApp.initDataUnsafe.user) {
           setUserInfo(WebApp.initDataUnsafe.user as UserInfo_type);
