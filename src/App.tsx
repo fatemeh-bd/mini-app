@@ -17,7 +17,7 @@ const App = () => {
       WebApp.expand();
       const fetchEmoji = async () => {
         try {
-          const emojiId = "5368324170671202286"; // Replace with a valid emoji ID
+          const emojiId = "2369285173"; // Replace with a valid emoji ID
           const response = await axios.get(
             `https://api.telegram.org/bot8123335155:AAE2DjLwuOeEUiLliQzH_XdvfzSnzzr-kNI
 /getCustomEmojiStickers?custom_emoji_ids=${emojiId}`

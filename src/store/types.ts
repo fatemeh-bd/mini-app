@@ -8,6 +8,6 @@ export interface UserStore {
   setUserInfo: (data: UserInfo_type) => void;
 }
 export interface EmojiStore {
-  splash: number;
-  setEmojiSplash: (id: number) => void;
+  splash: string;
+  setEmojiSplash: (url: string) => void;
 }

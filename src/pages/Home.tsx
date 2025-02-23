@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div>
       <TopBar />
-      {splash}
+      <img src={splash} />
     </div>
   );
 };
