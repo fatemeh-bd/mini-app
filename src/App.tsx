@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import WebApp from "@twa-dev/sdk"; // اصلاح وارد کردن WebApp به صورت default
-import TopBar from "./components/topBar/TopBar";
+import WebApp from "@twa-dev/sdk";
+
 import useUserStore from "./store/userStore";
 import { UserInfo_type } from "./store/types";
+import { Route, Routes } from "react-router";
+import Home from "./pages/Home";
 
 const App = () => {
   const { setUserInfo } = useUserStore();
@@ -23,7 +25,11 @@ const App = () => {
 
   return (
     <div className="p-4">
-      <TopBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/test" element={<h1>sdsdsd</h1>} />
+
+      </Routes>
     </div>
   );
 };

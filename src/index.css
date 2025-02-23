@@ -13,3 +13,6 @@
   --gray500: #9ca3af;
   --gray800: #1f2937;
 }
+body {
+  direction: rtl;
+}
