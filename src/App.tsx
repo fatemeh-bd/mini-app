@@ -1,53 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import WebApp from "@twa-dev/sdk"; // اصلاح وارد کردن WebApp به صورت default
+import TopBar from "./components/topBar/TopBar";
+import useUserStore from "./store/userStore";
+import { UserInfo_type } from "./store/types";
 
 const App = () => {
-  const [user, setUser] = useState<{
-    first_name?: string;
-    photo_url?: string;
-  } | null>(null);
+  const { setUserInfo } = useUserStore();
 
   useEffect(() => {
     if (WebApp) {
       WebApp.ready();
       WebApp.expand();
-
-      console.log("WebApp initDataUnsafe:", WebApp.initDataUnsafe); // لاگ کردن داده‌ها
-
       if (WebApp.initDataUnsafe) {
         if (WebApp.initDataUnsafe.user) {
-          setUser(WebApp.initDataUnsafe.user);
+          setUserInfo(WebApp.initDataUnsafe.user as UserInfo_type);
         }
       }
-
-      document.body.style.backgroundColor = WebApp.themeParams.bg_color;
-      // document.body.style.color = WebApp.themeParams.text_color;
     } else {
       console.error("WebApp is not loaded");
     }
   }, []);
 
   return (
-    <div
-    // style={{
-    //   backgroundColor: WebApp.themeParams.bg_color,
-    //   color: WebApp.themeParams.text_color,
-    //   padding: "20px",
-    //   textAlign: "center",
-    // }}
-    >
-      <h1 style={{ color: "red" }}>وب اپ تلگرام</h1>
-      <p>{JSON.stringify(user, null, 2)}</p>
-      <img
-        src={user?.photo_url}
-        style={{
-          width: 100,
-          height: 100,
-          borderRadius: 100,
-          objectFit: "cover",
-        }}
-      />
-      {user ? <p>سلام {user?.first_name}!</p> : <p>در حال دریافت اطلاعات...</p>}
+    <div className="p-4">
+      <TopBar />
     </div>
   );
 };
