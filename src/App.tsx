@@ -5,7 +5,7 @@ import useUserStore from "./store/userStore";
 import { UserInfo_type } from "./store/types";
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
-import SplashScreen from "./components/splashScreen/SplashScreen";
+import SplashScreen from "./components/emojies/SplashScreen";
 
 const App = () => {
   const { setUserInfo } = useUserStore();

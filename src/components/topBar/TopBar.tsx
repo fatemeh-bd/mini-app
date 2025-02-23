@@ -8,21 +8,21 @@ const TopBar = () => {
   const { userInfo } = useUserStore();
   return (
     <div className="flex justify-between">
-      <div className="flex items-center gap-x-4">
-        <IconBadge Icon={BellIcon} />
-        <Link to={"/test"}>
-          <IconBadge Icon={WalletIcon} />
-        </Link>
-      </div>
       {userInfo.first_name && (
         <Badge className="flex gap-x-2 items-center">
           {userInfo.first_name.slice(0, 18)}
           <img
             src={userInfo.photo_url}
-            className="size-8 object-fill rounded-full"
+            className="size-7 object-fill rounded-full"
           />
         </Badge>
       )}
+      <div className="flex items-center gap-x-4">
+        <Link to={"/test"}>
+          <IconBadge Icon={WalletIcon} />
+        </Link>
+        <IconBadge Icon={BellIcon} />
+      </div>
     </div>
   );
 };
