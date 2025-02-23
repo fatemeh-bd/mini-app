@@ -19,8 +19,8 @@ const App = () => {
         try {
           const emojiId = "5368324170671202286"; // Replace with a valid emoji ID
           const response = await axios.get(
-            `https://api.telegram.org/bot<8123335155:AAE2DjLwuOeEUiLliQzH_XdvfzSnzzr-kNI
->/getCustomEmojiStickers?custom_emoji_ids=${emojiId}`
+            `https://api.telegram.org/bot8123335155:AAE2DjLwuOeEUiLliQzH_XdvfzSnzzr-kNI
+/getCustomEmojiStickers?custom_emoji_ids=${emojiId}`
           );
           const emojiUrl = response.data.result[0].thumb.file_id; // Example: Get the emoji URL
           setEmojiSplash(emojiUrl); // Set the emoji URL or data
