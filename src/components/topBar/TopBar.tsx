@@ -16,11 +16,11 @@ const TopBar = () => {
       </div>
       {userInfo.first_name && (
         <Badge className="flex gap-x-2 items-center">
+          {userInfo.first_name.slice(0, 18)}
           <img
             src={userInfo.photo_url}
-            className="size-6 object-fill rounded-full"
+            className="size-8 object-fill rounded-full"
           />
-          {userInfo.first_name.slice(0, 16)}
         </Badge>
       )}
     </div>
