@@ -25,7 +25,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="p-4 bg-white h-[100svh] overflow-auto">
+    <div className="p-4 bg-white h-[100%] overflow-auto">
       <SplashScreen />
       <Routes>
         <Route path="/" element={<Home />} />
