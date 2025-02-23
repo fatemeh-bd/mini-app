@@ -1,5 +1,5 @@
 import Lottie from "lottie-react";
-import emoji from "../../assets/_DUCK8_SAD_OUT.json";
+import emoji from "../../assets/splash.json";
 import { useEffect, useRef, useState } from "react";
 
 const SplashScreen = () => {
@@ -15,7 +15,7 @@ const SplashScreen = () => {
 
     const hideSplashScreen = setTimeout(() => {
       setShowSplashScreen(false);
-    }, 2500);
+    }, 3000);
 
     return () => {
       clearTimeout(timer);
@@ -24,8 +24,8 @@ const SplashScreen = () => {
   }, []);
   return (
     showSplashScreen && (
-      <div>
-        <Lottie animationData={emoji} loop={true} />
+      <div className="p-10 fixed z-50 flex items-center justify-center inset-0 w-full h-screen bg-white">
+        <Lottie animationData={emoji} loop={true} className="w-[270px]" />
       </div>
     )
   );
