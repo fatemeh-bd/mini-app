@@ -25,7 +25,7 @@ const SplashScreen = () => {
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center w-full h-screen bg-white 
+      className={`fixed inset-0 flex items-center justify-center w-full h-[100svh] bg-white 
       transition-opacity duration-500 ${fadeOut ? "opacity-0" : "opacity-100 z-50"}`}
     >
       <Lottie animationData={emoji} loop={true} className="w-[220px]" />
