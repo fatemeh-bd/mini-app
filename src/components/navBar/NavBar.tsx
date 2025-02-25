@@ -1,20 +1,13 @@
 import { useState, useEffect } from "react";
-import WebApp from "@twa-dev/sdk"; // فرض کنید این SDK به شما دسترسی به API تلگرام رو میده
+import WebApp from "@twa-dev/sdk";
 import { Cog6ToothIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Paragraph from "../typography/Paragraph";
 import { HomeIcon } from "@heroicons/react/20/solid";
 import Title from "../typography/Title";
 import Badge from "../badges/Badge";
 
-const someAsyncOperation = async () => {
-  // عملیات غیرهمزمان مورد نظر رو اینجا انجام بدید
-  return new Promise((resolve) => setTimeout(resolve, 2000));
-};
-
 const NavBar = () => {
   const [openConfig, setOpenConfig] = useState(false);
-
-  // کنترل نمایش و متن دکمه تلگرام
   useEffect(() => {
     if (openConfig) {
       WebApp.MainButton.setText("Next");
@@ -24,19 +17,12 @@ const NavBar = () => {
     }
   }, [openConfig]);
 
-  // تنظیم handler کلیک برای MainButton
   useEffect(() => {
     const handleMainButtonClick = async () => {
-      // فعال کردن loader (اگر API از setProgress پشتیبانی کنه)
-      // @ts-ignore
-      WebApp.MainButton.setProgress && WebApp.MainButton.setProgress(true);
-      // انجام عملیات غیرهمزمان
-      await someAsyncOperation();
-      // خاموش کردن loader
-      // @ts-ignore
+      WebApp.MainButton.disable();
+      WebApp.MainButton.setText("Next");
+      WebApp.MainButton.enable();
 
-      WebApp.MainButton.setProgress && WebApp.MainButton.setProgress(false);
-      // انجام سایر عملیات (مثلاً بستن config)
       setOpenConfig(false);
     };
 
@@ -84,7 +70,6 @@ const NavBar = () => {
             TR Turkey
           </Badge>
         </div>
-        {/* در این بخش شما نیازی به رندر دکمه ندارید؛ دکمه بومی تلگرام توسط API مدیریت می‌شود */}
       </div>
 
       <Paragraph light className="text-center pt-4">
