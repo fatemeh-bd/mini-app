@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import Paragraph from "../typography/Paragraph";
 
 type SliderProps = {
   min?: number;
@@ -19,15 +20,27 @@ const SliderRange = ({
 
   const progress = ((value - min) / (max - min)) * 100;
 
-  const updateValueFromEvent = (e: MouseEvent | React.MouseEvent) => {
+  const updateValueFromEvent = (
+    e: MouseEvent | React.MouseEvent | TouchEvent | React.TouchEvent
+  ) => {
     if (!sliderRef.current) return;
     const rect = sliderRef.current.getBoundingClientRect();
-    let newProgress = ((e.clientX - rect.left) / rect.width) * 100;
+    let clientX: number;
+  
+    // Check if it's a touch event
+    if ('touches' in e && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+    } else {
+      clientX = (e as MouseEvent | React.MouseEvent).clientX;
+    }
+  
+    let newProgress = ((clientX - rect.left) / rect.width) * 100;
     newProgress = Math.min(Math.max(newProgress, 0), 100);
     const newValue = Math.round((newProgress / 100) * (max - min) + min);
     setValue(newValue);
     if (onChange) onChange(newValue);
   };
+  
 
   const handleMouseDown = (e: React.MouseEvent) => {
     dragging.current = true;
@@ -43,19 +56,36 @@ const SliderRange = ({
   const handleMouseUp = () => {
     dragging.current = false;
   };
+  const handleTouchStart = (e: React.TouchEvent) => {
+    dragging.current = true;
+    updateValueFromEvent(e);
+  };
+  const handleTouchMove = (e: TouchEvent) => {
+    if (dragging.current) {
+      updateValueFromEvent(e);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    dragging.current = false;
+  };
 
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, []);
-
   return (
-    <div className="col-span-2 spinOnce flex w-full m-auto items-center h-32 justify-center">
-      <div className="py-1 relative min-w-full" ref={sliderRef}>
+    <div className="col-span-2 spinOnce flex items-center gap-2 flex-nowrap  w-full m-auto mt-12">
+      <div className="py-1 relative w-full" ref={sliderRef}>
         <div className="h-2 bg-secondary-200 rounded-full relative">
           <div
             className="absolute h-2 rounded-full bg-primary"
@@ -64,6 +94,7 @@ const SliderRange = ({
           <div
             className="absolute h-4 flex items-center justify-center w-4 rounded-full bg-white shadow border border-secondary-500 -ml-2 -top-1 cursor-pointer select-none"
             onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
             style={{ left: `${progress}%` }}
           >
             <div className="relative -mt-2 w-1">
@@ -73,7 +104,7 @@ const SliderRange = ({
               >
                 <div className="relative shadow-md">
                   <div className="bg-black -mt-8 text-white truncate text-xs rounded py-1 px-4">
-                    {value}
+                    {value} GB
                   </div>
                   <svg
                     className="absolute text-black w-full h-2 left-0 top-full"
@@ -89,12 +120,11 @@ const SliderRange = ({
               </div>
             </div>
           </div>
-
-          <div className="absolute text-secondary-800 -mr-1 bottom-0 right-0 -mb-6">
-            {max}
-          </div>
         </div>
       </div>
+      <Paragraph light className="text-nowrap">
+        {max} GB
+      </Paragraph>
     </div>
   );
 };

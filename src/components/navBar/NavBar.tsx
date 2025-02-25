@@ -19,7 +19,7 @@ const NavBar = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const [selectedRange, setSelectedRange] = useState<number>(0);
   const [openConfig, setOpenConfig] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [configName, setConfigName] = useState<string>("");
   useEffect(() => {
     if (selectedRegion) {
