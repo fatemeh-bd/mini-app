@@ -5,25 +5,37 @@ import Paragraph from "../typography/Paragraph";
 import { HomeIcon } from "@heroicons/react/20/solid";
 import Title from "../typography/Title";
 import Badge from "../badges/Badge";
-
+import SliderRange from "../slider/SliderRange";
+import Input from "../inputs/Input";
+const regions = [
+  "DE Germany",
+  "NL Netherlands",
+  "us United States",
+  "TR Turkey",
+];
+const periods = ["One month", "Two months", "Three months", "Six months"];
 const NavBar = () => {
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+  const [selectedRange, setSelectedRange] = useState<number>(0);
   const [openConfig, setOpenConfig] = useState(false);
+  const [step, setStep] = useState(1);
+  const [configName, setConfigName] = useState<string>("");
   useEffect(() => {
-    if (openConfig) {
+    if (selectedRegion) {
       WebApp.MainButton.setText("Next");
       WebApp.MainButton.show();
     } else {
       WebApp.MainButton.hide();
     }
-  }, [openConfig]);
+  }, [selectedRegion]);
 
   useEffect(() => {
     const handleMainButtonClick = async () => {
       WebApp.MainButton.disable();
       WebApp.MainButton.setText("Next");
       WebApp.MainButton.enable();
-
-      setOpenConfig(false);
+      setStep(step + 1);
     };
 
     WebApp.MainButton.onClick(handleMainButtonClick);
@@ -33,7 +45,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <div className="fixed right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
+    <div className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
       <div className="flex items-stretch justify-around gap-6">
         <HomeIcon className="size-7 text-primary" />
         <div
@@ -50,26 +62,81 @@ const NavBar = () => {
       </div>
 
       <div
-        className={`overflow-hidden transition-all duration-500 ${
-          openConfig ? "opacity-100 h-auto p-4" : "opacity-0 h-0 p-0"
+        className={`overflow-hidden transition-all duration-1000 ${
+          openConfig ? "opacity-100 h-auto py-4 px-1" : "opacity-0 h-0 p-0"
         }`}
       >
         <Title>Create new config</Title>
-        <Paragraph light>select region</Paragraph>
-        <div className="grid grid-cols-2 gap-3 my-2">
-          <Badge className="!rounded-md text-center text-secondary-600">
-            DE Germany
-          </Badge>
-          <Badge className="!rounded-md text-center text-secondary-600">
-            NL Netherlands
-          </Badge>
-          <Badge className="!rounded-md text-center text-secondary-600">
-            us United States
-          </Badge>
-          <Badge className="!rounded-md text-center text-secondary-600">
-            TR Turkey
-          </Badge>
-        </div>
+        <Paragraph light>
+          {step === 1
+            ? "select region"
+            : step === 2
+            ? "Select period and traffic"
+            : "Config name and pay"}
+        </Paragraph>
+        {step === 1 ? (
+          <div className="grid grid-cols-2 gap-3 my-2">
+            {regions.map((region) => (
+              <Badge
+                key={region}
+                onClick={() => setSelectedRegion(region)}
+                className={`cursor-pointer !rounded-md text-center ${
+                  selectedRegion === region
+                    ? "!bg-primary text-white"
+                    : "text-secondary-600"
+                }`}
+              >
+                <span className="text-xs inline-block mx-1">
+                  {region.split(" ")[0]}
+                </span>
+                {region.split(" ")[1]}
+              </Badge>
+            ))}
+          </div>
+        ) : step === 2 ? (
+          <div className="grid grid-cols-2 gap-3 my-2 spinOnce">
+            {periods.map((period) => (
+              <Badge
+                key={period}
+                onClick={() => setSelectedPeriod(period)}
+                className={`cursor-pointer !rounded-md text-center ${
+                  selectedPeriod === period
+                    ? "!bg-primary text-white"
+                    : "text-secondary-600"
+                }`}
+              >
+                {period}
+              </Badge>
+            ))}
+            <Paragraph light>37,000,000 Toman</Paragraph>
+            {selectedPeriod && (
+              <SliderRange onChange={(value) => setSelectedRange(value)} />
+            )}{" "}
+          </div>
+        ) : (
+          step === 3 && (
+            <div>
+              <Input
+                value={configName}
+                onChange={(e) => setConfigName(e.target.value)}
+                label="Config name"
+              />
+              <Title>Your config</Title>
+              <div className="flex justify-between items-center">
+                <Paragraph>
+                  <span className="text-xs">
+                    {selectedRegion?.split(" ")[0]}
+                  </span>
+                  <span>-</span>
+                  {configName}
+                </Paragraph>
+                <Paragraph>
+                  {`( ${selectedPeriod} ) (${selectedRange} GB)`}
+                </Paragraph>
+              </div>
+            </div>
+          )
+        )}
       </div>
 
       <Paragraph light className="text-center pt-4">
