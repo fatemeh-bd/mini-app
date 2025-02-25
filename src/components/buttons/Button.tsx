@@ -33,7 +33,7 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button type="button" name="Button" className={combinedClasses} {...props}>
       {loading ? (
-        <Loader />
+        "loading..."
       ) : (
         <>
           {Icon && <Icon className="size-5" />}
