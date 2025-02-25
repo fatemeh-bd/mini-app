@@ -42,7 +42,7 @@ const NavBar = () => {
     return () => {
       WebApp.MainButton.offClick(handleMainButtonClick);
     };
-  }, []);
+  }, [selectedRegion,selectedPeriod]);
 
   return (
     <div className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
