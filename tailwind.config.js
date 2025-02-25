@@ -18,6 +18,15 @@ export default {
           800: "var(--gray800)",
         },
       },
+      keyframes: {
+        spinOnce: {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+      },
+      animation: {
+        spinOnce: "spinOnce 0.5s ease-out forwards",
+      },
     },
   },
   plugins: [],
