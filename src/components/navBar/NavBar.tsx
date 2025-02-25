@@ -50,7 +50,18 @@ const NavBar = () => {
         <HomeIcon className="size-7 text-primary" />
         <div
           className="bg-primary p-3 rounded-full absolute -top-6 cursor-pointer"
-          onClick={() => setOpenConfig((prev) => !prev)}
+          onClick={() =>
+            setOpenConfig((prev) => {
+              if (prev) {
+                setStep(1);
+                setSelectedPeriod(null);
+                setSelectedRegion(null);
+                setConfigName("");
+                setSelectedRange(0);
+              }
+              return !prev;
+            })
+          }
         >
           <PlusIcon
             className={`size-8 text-white transition-all duration-500 ${
