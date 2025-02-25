@@ -26,21 +26,20 @@ const SliderRange = ({
     if (!sliderRef.current) return;
     const rect = sliderRef.current.getBoundingClientRect();
     let clientX: number;
-  
+
     // Check if it's a touch event
-    if ('touches' in e && e.touches.length > 0) {
+    if ("touches" in e && e.touches.length > 0) {
       clientX = e.touches[0].clientX;
     } else {
       clientX = (e as MouseEvent | React.MouseEvent).clientX;
     }
-  
+
     let newProgress = ((clientX - rect.left) / rect.width) * 100;
     newProgress = Math.min(Math.max(newProgress, 0), 100);
     const newValue = Math.round((newProgress / 100) * (max - min) + min);
     setValue(newValue);
     if (onChange) onChange(newValue);
   };
-  
 
   const handleMouseDown = (e: React.MouseEvent) => {
     dragging.current = true;
@@ -100,7 +99,7 @@ const SliderRange = ({
             <div className="relative -mt-2 w-1">
               <div
                 className="absolute z-40 opacity-100 bottom-full mb-2 left-0 min-w-full"
-                style={{ marginLeft: "-20.5px" }}
+                style={{ left: "-31.5px" }}
               >
                 <div className="relative shadow-md">
                   <div className="bg-black -mt-8 text-white truncate text-xs rounded py-1 px-4">
