@@ -1,23 +1,20 @@
 import { useEffect } from "react";
 import NavBar from "../components/navBar/NavBar";
+import WebApp from "@twa-dev/sdk";
 
 const Setting = () => {
   useEffect(() => {
-    let meta = document.querySelector('meta[name="theme-color"]');
+    if (WebApp) {
+      WebApp.ready();
+      WebApp.expand();
 
-    if (!meta) {
-      meta = document.createElement("meta");
-      // @ts-ignore
-      meta.name = "theme-color";
-      document.head.appendChild(meta);
+      // تعیین رنگ هدر به رنگ پس‌زمینه تم تلگرام
+      WebApp.setHeaderColor("bg_color");
+      WebApp.setHeaderColor("custom_color", "#ff6600");
+
+    } else {
+      console.error("WebApp is not loaded");
     }
-    
-    meta.setAttribute("content", "#007bff");
-
-    return () => {
-      meta.setAttribute("content", "#ffffff");
-    };
-    
   }, []);
 
   return (
