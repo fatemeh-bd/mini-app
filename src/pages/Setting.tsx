@@ -7,6 +7,7 @@ const Setting = () => {
 
     if (!meta) {
       meta = document.createElement("meta");
+      // @ts-ignore
       meta.name = "theme-color";
       document.head.appendChild(meta);
     }
