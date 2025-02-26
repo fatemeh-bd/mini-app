@@ -23,7 +23,7 @@ const Setting = () => {
       <div className="curvyHeader relative p-8">
         <img
           src={userInfo.photo_url}
-          className="size-12 object-fill rounded-full absolute inset-0 mx-auto z-50 top-[2.2rem] bg-primary"
+          className="size-16 object-fill rounded-full absolute inset-0 mx-auto z-50 top-[2.2rem] bg-primary"
         />
       </div>
       <NavBar />
