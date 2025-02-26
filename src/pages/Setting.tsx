@@ -43,7 +43,7 @@ const Setting = () => {
   };
   return (
     <>
-      <div className="curvyHeader relative p-8">
+      <div className="curvyHeader animate-bounce-once relative p-8">
         <img
           src={userInfo.photo_url}
           className="size-20 object-fill rounded-full absolute inset-0 mx-auto z-10 top-[1.3rem] bg-primary"
@@ -54,7 +54,7 @@ const Setting = () => {
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <LanguageIcon className="size-7 bg-secondary-200 rounded-md p-1" />
-            Languege
+            <Paragraph>Languege</Paragraph>
           </div>
           <Paragraph className="flex items-center gap-1">
             {userInfo?.language_code}
@@ -65,7 +65,7 @@ const Setting = () => {
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <MoonIcon className="size-7 bg-secondary-200 rounded-md p-1" />
-            Dark mode
+            <Paragraph>Dark mode</Paragraph>
           </div>
           <SwitchButton
             label=""
@@ -77,7 +77,7 @@ const Setting = () => {
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <MoonIcon className="size-7 bg-secondary-200 rounded-md p-1" />
-            Animations
+            <Paragraph>Animations</Paragraph>
           </div>
           <SwitchButton
             label=""
@@ -90,7 +90,7 @@ const Setting = () => {
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <DevicePhoneMobileIcon className="size-7 bg-secondary-200 rounded-md p-1" />
-            Haptic feedback
+            <Paragraph>Haptic feedback</Paragraph>
           </div>
           <SwitchButton
             label=""
@@ -104,7 +104,7 @@ const Setting = () => {
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BellIcon className="size-7 bg-secondary-200 rounded-md p-1" />
-            Telegram notification
+            <Paragraph>Telegram notification</Paragraph>
           </div>
 
           <SwitchButton
@@ -117,7 +117,7 @@ const Setting = () => {
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BellAlertIcon className="size-7 bg-secondary-200 rounded-md p-1" />
-            Config notification
+            <Paragraph>Config notification</Paragraph>
           </div>
 
           <SwitchButton
