@@ -1,22 +1,20 @@
-// import { useEffect } from "react";
+import { useEffect } from "react";
 import NavBar from "../components/navBar/NavBar";
-// import WebApp from "@twa-dev/sdk";
+import WebApp from "@twa-dev/sdk";
 
 const Setting = () => {
-  // useEffect(() => {
-  //   if (WebApp) {
-  //     WebApp.ready();
-  //     WebApp.expand();
+  useEffect(() => {
+    if (WebApp) {
+      WebApp.ready();
+      WebApp.expand();
 
-  //     // تعیین رنگ هدر به رنگ پس‌زمینه تم تلگرام
-  //     WebApp.setHeaderColor("bg_color");
-  //     // @ts-ignore
-  //     WebApp.setHeaderColor("custom_color", "#ff6600");
-
-  //   } else {
-  //     console.error("WebApp is not loaded");
-  //   }
-  // }, []);
+      // تعیین رنگ هدر به رنگ پس‌زمینه تم تلگرام
+      WebApp.setHeaderColor("bg_color");
+      WebApp.setHeaderColor("#ff6600");
+    } else {
+      console.error("WebApp is not loaded");
+    }
+  }, []);
 
   return (
     <div>
