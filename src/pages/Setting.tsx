@@ -43,10 +43,10 @@ const Setting = () => {
   };
   return (
     <>
-      <div className="curvyHeader overflow-hidden h-[112px] scale-x-110 animate-bounce-once relative p-8">
+      <div className="curvyHeader overflow-hidden h-[114px] scale-110 animate-bounce-once relative p-8">
         <img
           src={userInfo.photo_url}
-          className="size-20 object-fill rounded-full absolute inset-0 mx-auto z-10 top-[1.9rem] bg-primary"
+          className="size-20 block object-fill rounded-full absolute inset-0 mx-auto z-10 top-[2rem] bg-primary"
         />
       </div>
       <Title className="text-center">{userInfo?.first_name}</Title>

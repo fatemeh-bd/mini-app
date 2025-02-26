@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import WebApp from "@twa-dev/sdk";
-import { Cog6ToothIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  Cog6ToothIcon,
+  PlusIcon,
+  HomeIcon as HomeIconOutline,
+} from "@heroicons/react/24/outline";
 import Paragraph from "../typography/Paragraph";
-import { HomeIcon } from "@heroicons/react/20/solid";
+import { Cog8ToothIcon, HomeIcon } from "@heroicons/react/20/solid";
 import Title from "../typography/Title";
 import Badge from "../badges/Badge";
 import SliderRange from "../slider/SliderRange";
 import Input from "../inputs/Input";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 const regions = [
   "DE Germany",
   "NL Netherlands",
@@ -22,6 +26,8 @@ const NavBar = () => {
   const [openConfig, setOpenConfig] = useState(false);
   const [step, setStep] = useState(1);
   const [configName, setConfigName] = useState<string>("");
+  const { pathname } = useLocation();
+
   useEffect(() => {
     if (selectedRegion) {
       WebApp.MainButton.setText("Next");
@@ -49,7 +55,11 @@ const NavBar = () => {
     <div className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
       <div className="flex items-stretch justify-around gap-6">
         <Link to={"/"}>
-          <HomeIcon className="size-7 text-primary" />
+          {pathname === "/setting" ? (
+            <HomeIconOutline className="size-7 text-primary" />
+          ) : (
+            <HomeIcon className="size-7 text-primary" />
+          )}
         </Link>
         <div
           className="bg-primary p-3 rounded-full absolute -top-6 cursor-pointer"
@@ -73,7 +83,11 @@ const NavBar = () => {
           />
         </div>
         <Link to={"/setting"}>
-          <Cog6ToothIcon className="size-7 text-secondary-500" />
+          {pathname === "/setting" ? (
+            <Cog8ToothIcon className="size-7 text-primary" />
+          ) : (
+            <Cog6ToothIcon className="size-7 text-secondary-500" />
+          )}
         </Link>
       </div>
 

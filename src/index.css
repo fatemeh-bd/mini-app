@@ -23,7 +23,7 @@ body {
   right: 0;
   left: 0;
   width: 100vw;
-  height: 95px;
+  height: 93px;
   background-color: var(--primary);
   border-radius: 0 0 50% 50%/0 0 100% 100%;
   transform: scaleX(1.5);

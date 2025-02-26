@@ -29,13 +29,13 @@ export default {
             "animation-timing-function": "cubic-bezier(0.8, 0, 1, 1)",
           },
           "50%": {
-            transform: "none",
+            transform: "translateY(-15%)",
             "animation-timing-function": "cubic-bezier(0, 0, 0.2, 1)",
           },
         },
       },
       animation: {
-        "bounce-once": "bounceOnce 5.5s forwards",
+        "bounce-once": "bounceOnce 4.5s forwards",
         spinOnce: "spinOnce 0.5s ease-out forwards",
       },
     },
