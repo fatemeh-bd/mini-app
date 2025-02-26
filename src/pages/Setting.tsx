@@ -43,13 +43,13 @@ const Setting = () => {
   };
   return (
     <>
-      <div className="curvyHeader animate-bounce-once relative p-8">
+      <div className="curvyHeader overflow-hidden h-[112px] scale-x-110 animate-bounce-once relative p-8">
         <img
           src={userInfo.photo_url}
-          className="size-20 object-fill rounded-full absolute inset-0 mx-auto z-10 top-[1.3rem] bg-primary"
+          className="size-20 object-fill rounded-full absolute inset-0 mx-auto z-10 top-[1.9rem] bg-primary"
         />
       </div>
-      <Title className="text-center mt-12">{userInfo?.first_name}</Title>
+      <Title className="text-center">{userInfo?.first_name}</Title>
       <Badge className="my-4 !rounded-xl [&>div:not(:last-child)]:border-b [&>div]:border-secondary-200 ">
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
