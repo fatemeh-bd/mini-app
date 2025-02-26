@@ -1,10 +1,28 @@
-import { useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import NavBar from "../components/navBar/NavBar";
 import WebApp from "@twa-dev/sdk";
 import useUserStore from "../store/userStore";
+import Title from "../components/typography/Title";
+import Badge from "../components/badges/Badge";
+import {
+  BellAlertIcon,
+  BellIcon,
+  ChevronRightIcon,
+  DevicePhoneMobileIcon,
+  LanguageIcon,
+  MoonIcon,
+} from "@heroicons/react/24/outline";
+import Paragraph from "../components/typography/Paragraph";
+import SwitchButton from "../components/inputs/SwitchButton";
 const Setting = () => {
   const { userInfo } = useUserStore();
-
+  const [switches, setSwitches] = useState({
+    theme: false,
+    animate: false,
+    feedback: false,
+    telegramNotification: false,
+    configNotificatiom: false,
+  });
   useEffect(() => {
     if (WebApp) {
       WebApp.ready();
@@ -17,15 +35,99 @@ const Setting = () => {
       console.error("WebApp is not loaded");
     }
   }, []);
-
+  const statusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setSwitches({
+      ...switches,
+      [e.target.name]: e.target.checked,
+    });
+  };
   return (
     <>
       <div className="curvyHeader relative p-8">
         <img
           src={userInfo.photo_url}
-          className="size-16 object-fill rounded-full absolute inset-0 mx-auto z-50 top-[2.2rem] bg-primary"
+          className="size-20 object-fill rounded-full absolute inset-0 mx-auto z-10 top-[1.3rem] bg-primary"
         />
       </div>
+      <Title className="text-center mt-12">{userInfo?.first_name}</Title>
+      <Badge className="my-4 !rounded-xl [&>div:not(:last-child)]:border-b [&>div]:border-secondary-200 ">
+        <div className="p-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <LanguageIcon className="size-7 bg-secondary-200 rounded-md p-1" />
+            Languege
+          </div>
+          <Paragraph className="flex items-center gap-1">
+            {userInfo?.language_code}
+            <ChevronRightIcon className="size-4" />
+          </Paragraph>
+        </div>
+
+        <div className="p-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MoonIcon className="size-7 bg-secondary-200 rounded-md p-1" />
+            Dark mode
+          </div>
+          <SwitchButton
+            label=""
+            isChecked={switches.theme}
+            onChange={statusHandler}
+            name="theme"
+          />
+        </div>
+        <div className="p-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MoonIcon className="size-7 bg-secondary-200 rounded-md p-1" />
+            Animations
+          </div>
+          <SwitchButton
+            label=""
+            isChecked={switches.animate}
+            onChange={statusHandler}
+            name="animate"
+          />
+        </div>
+
+        <div className="p-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <DevicePhoneMobileIcon className="size-7 bg-secondary-200 rounded-md p-1" />
+            Haptic feedback
+          </div>
+          <SwitchButton
+            label=""
+            isChecked={switches.feedback}
+            onChange={statusHandler}
+            name="feedback"
+          />
+        </div>
+      </Badge>
+      <Badge className="mt-4 mb-28 !rounded-xl [&>div:not(:last-child)]:border-b [&>div]:border-secondary-200 ">
+        <div className="p-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <BellIcon className="size-7 bg-secondary-200 rounded-md p-1" />
+            Telegram notification
+          </div>
+
+          <SwitchButton
+            label=""
+            isChecked={switches.telegramNotification}
+            onChange={statusHandler}
+            name="telegramNotification"
+          />
+        </div>
+        <div className="p-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <BellAlertIcon className="size-7 bg-secondary-200 rounded-md p-1" />
+            Config notification
+          </div>
+
+          <SwitchButton
+            label=""
+            isChecked={switches.configNotificatiom}
+            onChange={statusHandler}
+            name="configNotificatiom"
+          />
+        </div>
+      </Badge>
       <NavBar />
     </>
   );

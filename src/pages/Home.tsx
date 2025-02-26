@@ -15,7 +15,7 @@ const Home = () => {
         <Title>My configs</Title>
         <span>0</span>
       </div>
-      <div className="h-[60svh] overflow-auto">
+      <div className="h-[100%] flex justify-center items-center overflow-auto">
         <NotFoundEmoji />
       </div>
       <NavBar />

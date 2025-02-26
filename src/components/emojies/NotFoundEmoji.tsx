@@ -4,7 +4,7 @@ import Paragraph from "../typography/Paragraph";
 
 const NotFoundEmoji = () => {
   return (
-    <div className="flex items-center flex-col justify-center h-full w-fit py-4 m-auto ">
+    <div className="mt-8 flex items-center flex-col justify-center h-full w-fit py-4 m-auto ">
       <Lottie
         animationData={emoji}
         loop={true}

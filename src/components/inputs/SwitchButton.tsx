@@ -27,8 +27,8 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
     <div className={`flex items-center gap-2 ${className}`}>
       <Paragraph>{label}</Paragraph>
       <label
-        className={`w-10 h-6 flex items-center rounded-full p-1 cursor-pointer ${
-          isChecked ? "bg-primary" : "bg-black"
+        className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer ${
+          isChecked ? "bg-primary" : "bg-secondary-200"
         }`}
         htmlFor={name}
       >
@@ -43,13 +43,13 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({
           {...rest}
         />
         <div
-          className={`w-5 h-5 border border-white  rounded-full transform transition-all duration-300 ease-in-out ${
+          className={`w-5 h-5 border border-secondary-200  rounded-full transform transition-all duration-300 ease-in-out ${
             isChecked
-              ? "translate-x-[-0.9rem] bg-white"
-              : "translate-x-[0.09rem] bg-white"
+              ? "translate-x-[1.1rem] bg-white"
+              : "translate-x-[-0.01rem] bg-white"
           }`}
         >
-          <div className="w-4 h-4 bg-black rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="w-4 h-4 bg-secondary-100 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
         </div>
       </label>
     </div>
