@@ -6,6 +6,7 @@ import { UserInfo_type } from "./store/types";
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
 import SplashScreen from "./components/emojies/SplashScreen";
+import Setting from "./pages/Setting";
 
 const App = () => {
   const { setUserInfo } = useUserStore();
@@ -29,7 +30,7 @@ const App = () => {
       <SplashScreen />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/test" element={<h1>sdsdsd</h1>} />
+        <Route path="/setting" element={<Setting />} />
       </Routes>
     </div>
   );

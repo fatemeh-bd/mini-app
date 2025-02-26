@@ -7,6 +7,7 @@ import Title from "../typography/Title";
 import Badge from "../badges/Badge";
 import SliderRange from "../slider/SliderRange";
 import Input from "../inputs/Input";
+import { Link } from "react-router";
 const regions = [
   "DE Germany",
   "NL Netherlands",
@@ -42,7 +43,7 @@ const NavBar = () => {
     return () => {
       WebApp.MainButton.offClick(handleMainButtonClick);
     };
-  }, [selectedRegion,selectedPeriod]);
+  }, [selectedRegion, selectedPeriod]);
 
   return (
     <div className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
@@ -69,7 +70,9 @@ const NavBar = () => {
             }`}
           />
         </div>
-        <Cog6ToothIcon className="size-7 text-secondary-500" />
+        <Link to={"/setting"}>
+          <Cog6ToothIcon className="size-7 text-secondary-500" />
+        </Link>
       </div>
 
       <div
