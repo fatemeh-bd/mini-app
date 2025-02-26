@@ -10,6 +10,7 @@ const Setting = () => {
 
       // تعیین رنگ هدر به رنگ پس‌زمینه تم تلگرام
       WebApp.setHeaderColor("bg_color");
+      // @ts-ignore
       WebApp.setHeaderColor("custom_color", "#ff6600");
 
     } else {
