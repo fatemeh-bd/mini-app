@@ -48,7 +48,9 @@ const NavBar = () => {
   return (
     <div className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
       <div className="flex items-stretch justify-around gap-6">
-        <HomeIcon className="size-7 text-primary" />
+        <Link to={"/"}>
+          <HomeIcon className="size-7 text-primary" />
+        </Link>
         <div
           className="bg-primary p-3 rounded-full absolute -top-6 cursor-pointer"
           onClick={() =>
