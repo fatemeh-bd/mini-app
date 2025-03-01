@@ -1,0 +1,1 @@
+export const POST_TELEGRAM_AUTH = "/account/TelegramAuth";
