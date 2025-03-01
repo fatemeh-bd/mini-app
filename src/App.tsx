@@ -5,18 +5,42 @@ import useUserStore from "./store/userStore";
 import { UserInfo_type } from "./store/types";
 import { Route, Routes } from "react-router";
 import Home from "./pages/Home";
+import { useInitData } from "@zakarliuka/react-telegram-web-tools";
 import SplashScreen from "./components/emojies/SplashScreen";
 import Setting from "./pages/Setting";
+import axios from "axios";
 
 const App = () => {
   const { setUserInfo } = useUserStore();
+  const { initData } = useInitData();
+  const handleAuth = async (body : any) => {
+    const options = {
+      method: 'POST',
+      url: 'https://botapi.zeroai.ir/account/TelegramAuth',
+      headers: { 'Content-Type': 'application/json' },
+      data: {
+         "initdata": body
+      }
+    };
+  
+    try {
+      const { data } = await axios.request(options);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  useEffect(() => {console.log('test new package',initData)}, [initData]);
+  
   useEffect(() => {
+   
     if (WebApp) {
       WebApp.ready();
       WebApp.expand();
       if (WebApp.initDataUnsafe) {
         if (WebApp.initDataUnsafe.user) {
+          handleAuth(WebApp.initDataUnsafe);
           setUserInfo(WebApp.initDataUnsafe.user as UserInfo_type);
         }
       }
