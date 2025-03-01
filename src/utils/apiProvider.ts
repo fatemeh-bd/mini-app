@@ -17,7 +17,10 @@ export const apiRequest = async <T>({ method, endpoint, headers = {}, body, para
     const config: AxiosRequestConfig = {
       method,
       url: `${BASE_URL}${endpoint}`,
-      headers,
+      headers : {
+        "Content-Type": "application/json",
+        ...headers,
+      },
       data: body,
       params,
     };

@@ -6,6 +6,7 @@ const useUserStore = create<UserStore>((set) => ({
     first_name: "",
     last_name: "",
     photo_url: "",
+    balance: "0",
   },
   setUserInfo: (data: UserInfo_type) => set(() => ({ userInfo: data })),
 }));

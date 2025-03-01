@@ -7,7 +7,6 @@ import Home from "./pages/Home";
 import { useInitData } from "@zakarliuka/react-telegram-web-tools";
 import SplashScreen from "./components/emojies/SplashScreen";
 import Setting from "./pages/Setting";
-import axios from "axios";
 import { useCookies } from "react-cookie";
 import { apiRequest } from "./utils/apiProvider";
 import { POST_TELEGRAM_AUTH } from "./utils/endPoints";
@@ -21,17 +20,37 @@ const App = () => {
   const handleAuth = async () => {
     setIsLoading(true);
     try {
-      // const { data } = await axios.post("https://botapi.zeroai.ir/account/TelegramAuth", { initdata: initData }, { headers: { "Content-Type": "application/json" } });
-      // @ts-ignore
-     
-      const { data } = await apiRequest({ method: "POST", endpoint: POST_TELEGRAM_AUTH, body: { initdata: initData },headers: { "Content-Type": "application/json" } });
-     console.log(data)
-      if (data?.accessToken && data?.refreshKey && data?.expireDate) {
-        const expireDate = new Date(data.expireDate);
-        const maxAge = Math.floor((expireDate.getTime() - Date.now()) / 1000); 
-
-        setCookie("accessToken", data.accessToken, { path: "/", httpOnly: false, maxAge: maxAge > 0 ? maxAge : 0 });
-        setCookie("refreshKey", data.refreshKey, { path: "/", httpOnly: false, maxAge: maxAge > 0 ? maxAge : 0 });
+      const response = await apiRequest({
+        method: "POST",
+        endpoint: POST_TELEGRAM_AUTH,
+        body: { initdata: initData },
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      // اطمینان از اینکه پاسخ دارای `data` است
+      if (typeof response === "object" && response !== null && "data" in response) {
+        const data = response.data as {
+          accessToken?: string;
+          refreshKey?: string;
+          expireDate?: string;
+        };
+        if (data?.accessToken && data?.refreshKey && data?.expireDate) {
+          const expireDate = new Date(data.expireDate);
+          const maxAge = Math.floor((expireDate.getTime() - Date.now()) / 1000);
+  
+          setCookie("accessToken", data.accessToken, {
+            path: "/",
+            httpOnly: false,
+            maxAge: maxAge > 0 ? maxAge : 0,
+          });
+          setCookie("refreshKey", data.refreshKey, {
+            path: "/",
+            httpOnly: false,
+            maxAge: maxAge > 0 ? maxAge : 0,
+          });
+        }
+      } else {
+        console.error("Invalid response format:", response);
       }
     } catch (error) {
       console.error(error);
@@ -39,6 +58,7 @@ const App = () => {
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (initData) {

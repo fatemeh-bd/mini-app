@@ -4,9 +4,34 @@ import Badge from "../badges/Badge";
 import useUserStore from "../../store/userStore";
 import DropdownMenu from "../dropdown/DropDownMenu";
 import Paragraph from "../typography/Paragraph";
+import { POST_USER_BALANCE } from "../../utils/endPoints";
+import { apiRequest } from "../../utils/apiProvider";
+import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 const TopBar = () => {
-  const { userInfo } = useUserStore();
+  const { userInfo, setUserInfo } = useUserStore();
+  const [cookies] = useCookies(["accessToken"]);
+  useEffect(() => {
+    const fetchUserBalance = async () => {
+      try {
+        const balance = await apiRequest<{ balance: any }>({
+          method: "POST",
+          endpoint: POST_USER_BALANCE,
+          headers: {
+            Authorization: `Bearer ${cookies.accessToken}`,
+          },
+        });
+        // @ts-ignore
+        setUserInfo({ ...userInfo, balance: String(balance.data) });
+      } catch (error) {
+        console.error("Failed to fetch user balance:", error);
+      }
+    };
+
+    fetchUserBalance();
+  }, [cookies.accessToken, setUserInfo]);
+
   return (
     <div className="flex justify-between">
       <DropdownMenu
@@ -47,12 +72,36 @@ const TopBar = () => {
       <div className="flex items-center gap-x-4">
         <DropdownMenu component={<IconBadge Icon={WalletIcon} />}>
           <ul className="[&>li:not(:last-child)]:border-b [&>li]:border-secondary-100 [&>li]:py-1.5 [&>li]:px-3">
-            <li>
-              <Paragraph>0 Toman</Paragraph>
+            <li className="flex items-center overflow-hidden whitespace-nowrap w-full relative">
+              <div className="inline-block animate-scrollText">
+                <Paragraph>
+                  {userInfo.balance
+                    ? new Intl.NumberFormat("en-US").format(
+                        Number(userInfo.balance)
+                      )
+                    : "0"}
+                </Paragraph>
+              </div>
+              <Paragraph className="ml-[-5px] px-2 py-1 bg-white relative z-10">
+                Toman
+              </Paragraph>
+
+              <style>
+                {`
+      @keyframes scrollText {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+      }
+      .animate-scrollText {
+        animation: scrollText 10s linear infinite;
+      }
+    `}
+              </style>
             </li>
-            <li>
+
+            {/* <li>
               <Paragraph>Requests</Paragraph>
-            </li>
+            </li> */}
           </ul>
         </DropdownMenu>
         <IconBadge Icon={BellIcon} />

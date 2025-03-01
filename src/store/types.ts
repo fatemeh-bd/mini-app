@@ -3,6 +3,7 @@ export interface UserInfo_type {
   last_name: string;
   photo_url: string;
   language_code?: string;
+  balance?: number | string;
 }
 export interface UserStore {
   userInfo: UserInfo_type;
