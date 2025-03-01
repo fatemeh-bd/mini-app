@@ -12,12 +12,10 @@ import Badge from "../badges/Badge";
 import SliderRange from "../slider/SliderRange";
 import Input from "../inputs/Input";
 import { Link, useLocation } from "react-router";
-const regions = [
-  "DE Germany",
-  "NL Netherlands",
-  "us United States",
-  "TR Turkey",
-];
+import { apiRequest } from "../../utils/apiProvider";
+import { POST_REGIONS } from "../../utils/endPoints";
+import { useCookies } from "react-cookie";
+
 const periods = ["One month", "Two months", "Three months", "Six months"];
 const NavBar = () => {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -27,7 +25,10 @@ const NavBar = () => {
   const [step, setStep] = useState(1);
   const [configName, setConfigName] = useState<string>("");
   const { pathname } = useLocation();
-
+  const [regions, setRegions] = useState<{ value: string; label: string }[]>(
+    []
+  );
+  const [cookies] = useCookies(["accessToken"]);
   useEffect(() => {
     if (selectedRegion) {
       WebApp.MainButton.setText("Next");
@@ -36,6 +37,22 @@ const NavBar = () => {
       WebApp.MainButton.hide();
     }
   }, [selectedRegion]);
+
+  const fetchData = async () => {
+    const regionsData = await apiRequest({
+      method: "POST",
+      endpoint: POST_REGIONS,
+      headers: {
+        Authorization: `Bearer ${cookies.accessToken}`,
+      },
+    });
+    // @ts-ignore
+    setRegions(regionsData.data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleMainButtonClick = async () => {
@@ -106,20 +123,20 @@ const NavBar = () => {
         </Paragraph>
         {step === 1 ? (
           <div className="grid grid-cols-2 gap-3 my-2">
-            {regions.map((region) => (
+            {regions && regions.map((region: { value: string; label: string }) => (
               <Badge
-                key={region}
-                onClick={() => setSelectedRegion(region)}
+                key={region.value}
+                onClick={() => setSelectedRegion(region.value)}
                 className={`cursor-pointer !rounded-md text-center ${
-                  selectedRegion === region
+                  selectedRegion === region.value
                     ? "!bg-primary text-white"
                     : "text-secondary-600"
                 }`}
               >
                 <span className="text-xs inline-block mx-1">
-                  {region.split(" ")[0]}
+                  {region.label.split(" ")[0]}
                 </span>
-                {region.split(" ")[1]}
+                {region.label.split(" ")[1]}
               </Badge>
             ))}
           </div>
