@@ -13,13 +13,17 @@ import SliderRange from "../slider/SliderRange";
 import Input from "../inputs/Input";
 import { Link, useLocation } from "react-router";
 import { apiRequest } from "../../utils/apiProvider";
-import { POST_REGIONS } from "../../utils/endPoints";
+import { POST_PLANS, POST_REGIONS } from "../../utils/endPoints";
 import { useCookies } from "react-cookie";
 
-const periods = ["One month", "Two months", "Three months", "Six months"];
+// const periods = ["One month", "Two months", "Three months", "Six months"];
 const NavBar = () => {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState<{
+    value: string;
+    label: string;
+    price: number;
+  } | null>({ value: "", label: "", price: 0 });
   const [selectedRange, setSelectedRange] = useState<number>(0);
   const [openConfig, setOpenConfig] = useState(false);
   const [step, setStep] = useState(1);
@@ -28,6 +32,9 @@ const NavBar = () => {
   const [regions, setRegions] = useState<{ value: string; label: string }[]>(
     []
   );
+  const [periods, setPeriods] = useState<
+    { value: string; label: string; price: number }[]
+  >([]);
   const [cookies] = useCookies(["accessToken"]);
   useEffect(() => {
     if (selectedRegion) {
@@ -39,13 +46,23 @@ const NavBar = () => {
   }, [selectedRegion]);
 
   const fetchData = async () => {
+    const token = cookies.accessToken;
     const regionsData = await apiRequest({
       method: "POST",
       endpoint: POST_REGIONS,
       headers: {
-        Authorization: `Bearer ${cookies.accessToken}`,
+        Authorization: `Bearer ${token}`,
       },
     });
+    const periodsData = await apiRequest({
+      method: "POST",
+      endpoint: POST_PLANS,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // @ts-ignore
+    setPeriods(periodsData.data);
     // @ts-ignore
     setRegions(regionsData.data);
   };
@@ -123,42 +140,72 @@ const NavBar = () => {
         </Paragraph>
         {step === 1 ? (
           <div className="grid grid-cols-2 gap-3 my-2">
-            {regions && regions.map((region: { value: string; label: string }) => (
-              <Badge
-                key={region.value}
-                onClick={() => setSelectedRegion(region.value)}
-                className={`cursor-pointer !rounded-md text-center ${
-                  selectedRegion === region.value
-                    ? "!bg-primary text-white"
-                    : "text-secondary-600"
-                }`}
-              >
-                <span className="text-xs inline-block mx-1">
-                  {region.label.split(" ")[0]}
-                </span>
-                {region.label.split(" ")[1]}
-              </Badge>
-            ))}
+            {regions &&
+              regions.map((region: { value: string; label: string }) => (
+                <Badge
+                  key={region.value}
+                  onClick={() => setSelectedRegion(region.value)}
+                  className={`cursor-pointer !rounded-md text-center ${
+                    selectedRegion === region.value
+                      ? "!bg-primary text-white"
+                      : "text-secondary-600"
+                  }`}
+                >
+                  <span className="text-xs inline-block mx-1">
+                    {region.label.split(" ")[0]}
+                  </span>
+                  {region.label.split(" ")[1]}
+                </Badge>
+              ))}
           </div>
         ) : step === 2 ? (
           <div className="grid grid-cols-2 gap-3 my-2 spinOnce">
-            {periods.map((period) => (
-              <Badge
-                key={period}
-                onClick={() => setSelectedPeriod(period)}
-                className={`cursor-pointer !rounded-md text-center ${
-                  selectedPeriod === period
-                    ? "!bg-primary text-white"
-                    : "text-secondary-600"
-                }`}
-              >
-                {period}
-              </Badge>
-            ))}
-            <Paragraph light>37,000,000 Toman</Paragraph>
+            {periods.map(
+              (period: { value: string; label: string; price: number }) => (
+                <Badge
+                  key={period.value}
+                  onClick={() => setSelectedPeriod(period)}
+                  className={`cursor-pointer !rounded-md text-center ${
+                    selectedPeriod === period
+                      ? "!bg-primary text-white"
+                      : "text-secondary-600"
+                  }`}
+                >
+                  {period.label}
+                </Badge>
+              )
+            )}
             {selectedPeriod && (
+              <div className="flex items-center overflow-hidden whitespace-nowrap w-full relative">
+                <div className="inline-block animate-scrollText">
+                  <Paragraph>
+                    {selectedPeriod?.price
+                      ? new Intl.NumberFormat("en-US").format(
+                          Number(selectedPeriod?.price)
+                        )
+                      : "0"}
+                  </Paragraph>
+                </div>
+                <Paragraph className="ml-[-5px] px-2 py-1 bg-white relative z-10">
+                  Toman
+                </Paragraph>
+
+                <style>
+                  {`
+      @keyframes scrollText {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+        }
+        .animate-scrollText {
+          animation: scrollText 10s linear infinite;
+          }
+          `}
+                </style>
+              </div>
+            )}
+            {/* {selectedPeriod && (
               <SliderRange onChange={(value) => setSelectedRange(value)} />
-            )}{" "}
+            )}{" "} */}
           </div>
         ) : (
           step === 3 && (
@@ -169,7 +216,7 @@ const NavBar = () => {
                 label="Config name"
               />
               <Title>Your config</Title>
-              <div className="flex justify-between items-center">
+              <div dir="rtl" className="flex justify-between items-center">
                 <Paragraph>
                   <span className="text-xs">
                     {selectedRegion?.split(" ")[0]}
@@ -178,8 +225,9 @@ const NavBar = () => {
                   {configName}
                 </Paragraph>
                 <Paragraph>
-                  {`( ${selectedPeriod} ) (${selectedRange} GB)`}
+                  {selectedPeriod?.label}
                 </Paragraph>
+                  
               </div>
             </div>
           )
