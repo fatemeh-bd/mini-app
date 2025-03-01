@@ -13,13 +13,13 @@ import axios from "axios";
 const App = () => {
   const { setUserInfo } = useUserStore();
   const { initData } = useInitData();
-  const handleAuth = async (body : any) => {
+  const handleAuth = async () => {
     const options = {
       method: 'POST',
       url: 'https://botapi.zeroai.ir/account/TelegramAuth',
       headers: { 'Content-Type': 'application/json' },
       data: {
-         "initdata": body
+         "initdata": initData
       }
     };
   
@@ -31,7 +31,10 @@ const App = () => {
     }
   };
 
-  useEffect(() => {console.log('test new package',initData)}, [initData]);
+  useEffect(() => {
+    if(initData) { handleAuth(); }
+  }
+  , [initData]);
   
   useEffect(() => {
    
@@ -40,7 +43,6 @@ const App = () => {
       WebApp.expand();
       if (WebApp.initDataUnsafe) {
         if (WebApp.initDataUnsafe.user) {
-          handleAuth(WebApp.initDataUnsafe);
           setUserInfo(WebApp.initDataUnsafe.user as UserInfo_type);
         }
       }
