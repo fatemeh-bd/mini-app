@@ -15,6 +15,7 @@ import { Link, useLocation } from 'react-router';
 import { apiRequest } from '../../utils/apiProvider';
 import { POST_PLANS, POST_REGIONS } from '../../utils/endPoints';
 import { useCookies } from 'react-cookie';
+import { useQuery } from '@tanstack/react-query';
 
 // const periods = ["One month", "Two months", "Three months", "Six months"];
 const NavBar = () => {
@@ -29,13 +30,15 @@ const NavBar = () => {
   const [step, setStep] = useState(1);
   const [configName, setConfigName] = useState<string>('');
   const { pathname } = useLocation();
+  const [error, setError] = useState<string | null>(null);
+  const [cookies] = useCookies(['accessToken']);
+  const token = cookies.accessToken;
   const [regions, setRegions] = useState<{ value: string; label: string }[]>(
     []
   );
   const [periods, setPeriods] = useState<
     { value: string; label: string; price: number }[]
   >([]);
-  const [cookies] = useCookies(['accessToken']);
   useEffect(() => {
     if (selectedRegion) {
       WebApp.MainButton.setText('Next');
@@ -45,8 +48,7 @@ const NavBar = () => {
     }
   }, [selectedRegion]);
 
-  const fetchData = async () => {
-    const token = cookies.accessToken;
+  const fetchLocations = async () => {
     const regionsData = await apiRequest({
       method: 'POST',
       endpoint: POST_REGIONS,
@@ -54,6 +56,11 @@ const NavBar = () => {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    // @ts-ignore
+    setRegions(regionsData.data);
+  };
+  const fetchPeriods = async () => {
     const periodsData = await apiRequest({
       method: 'POST',
       endpoint: POST_PLANS,
@@ -63,20 +70,43 @@ const NavBar = () => {
     });
     // @ts-ignore
     setPeriods(periodsData.data);
-    // @ts-ignore
-    setRegions(regionsData.data);
+  };
+  const locationsQuery = useQuery({
+    queryKey: ['locations'],
+    queryFn: fetchLocations,
+  });
+  const PeriodsQuery = useQuery({
+    queryKey: ['periods'],
+    queryFn: fetchPeriods,
+  });
+
+  const handleValidate = () => {
+    if (step === 1 && !selectedRegion) {
+      setError('Please select a region');
+      return false;
+    } else if (step === 2 && !selectedPeriod) {
+      setError('Please select a period');
+      return false;
+    } else if (step === 3 && !configName) {
+      setError('Please enter a name for your configuration');
+      return false;
+    } else {
+      setError(null);
+      return true;
+    }
   };
 
   const handleStep = () => {
-    if (step < 3) {
-      setStep(step + 1);
-    } else {
-      setStep(1);
+    if (handleValidate()) {
+      if (step < 3) {
+        setStep(step + 1);
+      } else {
+        setStep(1);
+      }
     }
   };
 
   useEffect(() => {
-    fetchData();
     setOpenConfig((prev) => {
       if (prev) {
         setStep(1);
@@ -86,6 +116,8 @@ const NavBar = () => {
       }
       return !prev;
     });
+    if (locationsQuery && PeriodsQuery) {
+    }
   }, []);
 
   // useEffect(() => {
@@ -143,7 +175,7 @@ const NavBar = () => {
 
       <div
         className={`overflow-hidden transition-all duration-1000 ${
-          openConfig ? 'opacity-100 h-auto py-4 px-1' : 'opacity-0 h-0 p-0'
+          openConfig ? 'opacity-100 h-auto pt-4 px-1' : 'opacity-0 h-0 p-0'
         }`}>
         <Title>Create new config</Title>
         <Paragraph light>
@@ -199,7 +231,7 @@ const NavBar = () => {
                       : '0'}
                   </Paragraph>
                 </div>
-                <Paragraph className="ml-[-2px] px-2 py-1 relative z-10">
+                <Paragraph className="ml-[-2px] px-2 relative z-10">
                   Toman
                 </Paragraph>
               </div>
@@ -232,34 +264,19 @@ const NavBar = () => {
         )}
       </div>
       {openConfig && (
+        <div className="mb-2">
+          {error && <span className="text-red-500">{error}</span>}
+        </div>
+      )}
+      {openConfig && (
         <button
           onClick={() => {
             handleStep();
           }}
-          disabled={
-            step === 1 && selectedRegion === null
-              ? true
-              : step === 2 && selectedPeriod === null
-              ? true
-              : step === 3 && configName === ''
-              ? true
-              : false
-          }
-          className={`w-full cursor-pointer !rounded-md text-center py-2 bg-secondary-100 shadow-[0px_0px_4px] shadow-secondary-500/60 ${
-            step === 1 && selectedRegion !== null
-              ? '!bg-primary !text-white'
-              : step === 2 && selectedPeriod !== null
-              ? '!bg-primary !text-white'
-              : step === 3 && configName !== ''
-              ? '!bg-primary !text-white'
-              : '!bg-secondary-100 !text-secondary-600'
-          }`}>
+          className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60 `}>
           Next
         </button>
       )}
-      {/* <Paragraph light className="text-center pt-4">
-        @Testmini
-      </Paragraph> */}
     </div>
   );
 };

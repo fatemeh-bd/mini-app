@@ -32,7 +32,7 @@ const TopBar = () => {
 
   const query = useQuery({ queryKey: ['balance'], queryFn: fetchUserBalance });
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['balance'] });
+    query && queryClient.invalidateQueries({ queryKey: ['balance'] });
   }, [cookies.accessToken, setUserInfo]);
 
   return (
