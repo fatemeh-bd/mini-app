@@ -1,16 +1,19 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
-import { BrowserRouter } from "react-router";
-import { WebAppProvider } from "@zakarliuka/react-telegram-web-tools";
-
-createRoot(document.getElementById("root")!).render(
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
+import { BrowserRouter } from 'react-router';
+import { WebAppProvider } from '@zakarliuka/react-telegram-web-tools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const queryClient = new QueryClient();
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-    <WebAppProvider>
-      <App />
-    </WebAppProvider>
+      <QueryClientProvider client={queryClient}>
+        <WebAppProvider>
+          <App />
+        </WebAppProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>
 );

@@ -1,35 +1,38 @@
-import { BellIcon, WalletIcon } from "@heroicons/react/24/outline";
-import IconBadge from "../badges/IconBadge";
-import Badge from "../badges/Badge";
-import useUserStore from "../../store/userStore";
-import DropdownMenu from "../dropdown/DropDownMenu";
-import Paragraph from "../typography/Paragraph";
-import { POST_USER_BALANCE } from "../../utils/endPoints";
-import { apiRequest } from "../../utils/apiProvider";
-import { useEffect } from "react";
-import { useCookies } from "react-cookie";
+import { BellIcon, WalletIcon } from '@heroicons/react/24/outline';
+import IconBadge from '../badges/IconBadge';
+import Badge from '../badges/Badge';
+import useUserStore from '../../store/userStore';
+import DropdownMenu from '../dropdown/DropDownMenu';
+import Paragraph from '../typography/Paragraph';
+import { POST_USER_BALANCE } from '../../utils/endPoints';
+import { apiRequest } from '../../utils/apiProvider';
+import { useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const TopBar = () => {
   const { userInfo, setUserInfo } = useUserStore();
-  const [cookies] = useCookies(["accessToken"]);
-  useEffect(() => {
-    const fetchUserBalance = async () => {
-      try {
-        const balance = await apiRequest<{ balance: any }>({
-          method: "POST",
-          endpoint: POST_USER_BALANCE,
-          headers: {
-            Authorization: `Bearer ${cookies.accessToken}`,
-          },
-        });
-        // @ts-ignore
-        setUserInfo({ ...userInfo, balance: String(balance.data) });
-      } catch (error) {
-        console.error("Failed to fetch user balance:", error);
-      }
-    };
+  const [cookies] = useCookies(['accessToken']);
+  const queryClient = useQueryClient();
+  const fetchUserBalance = async () => {
+    try {
+      const balance = await apiRequest<{ balance: any }>({
+        method: 'POST',
+        endpoint: POST_USER_BALANCE,
+        headers: {
+          Authorization: `Bearer ${cookies.accessToken}`,
+        },
+      });
+      // @ts-ignore
+      setUserInfo({ ...userInfo, balance: String(balance.data) });
+    } catch (error) {
+      console.error('Failed to fetch user balance:', error);
+    }
+  };
 
-    fetchUserBalance();
+  const query = useQuery({ queryKey: ['balance'], queryFn: fetchUserBalance });
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['balance'] });
   }, [cookies.accessToken, setUserInfo]);
 
   return (
@@ -48,8 +51,7 @@ const TopBar = () => {
               </>
             )}
           </Badge>
-        }
-      >
+        }>
         <ul className="[&>li:not(:last-child)]:border-b [&>li]:border-secondary-100 [&>li]:py-1.5 [&>li]:px-3">
           {userInfo.first_name && (
             <li>
@@ -73,30 +75,18 @@ const TopBar = () => {
         <DropdownMenu component={<IconBadge Icon={WalletIcon} />}>
           <ul className="[&>li:not(:last-child)]:border-b [&>li]:border-secondary-100 [&>li]:py-1.5 [&>li]:px-3">
             <li className="flex items-center overflow-hidden whitespace-nowrap w-full relative">
-              <div className="inline-block animate-scrollText">
+              <div className="">
                 <Paragraph>
                   {userInfo.balance
-                    ? new Intl.NumberFormat("en-US").format(
+                    ? new Intl.NumberFormat('en-US').format(
                         Number(userInfo.balance)
                       )
-                    : "0"}
+                    : '0'}
                 </Paragraph>
               </div>
-              <Paragraph className="ml-[-5px] px-2 py-1 bg-white relative z-10">
+              <Paragraph className="ml-[-2px] px-2 py-1 relative z-10">
                 Toman
               </Paragraph>
-
-              <style>
-                {`
-      @keyframes scrollText {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
-      }
-      .animate-scrollText {
-        animation: scrollText 10s linear infinite;
-      }
-    `}
-              </style>
             </li>
 
             {/* <li>

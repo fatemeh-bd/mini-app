@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import WebApp from "@twa-dev/sdk";
+import { useState, useEffect } from 'react';
+import WebApp from '@twa-dev/sdk';
 import {
   Cog6ToothIcon,
   PlusIcon,
   HomeIcon as HomeIconOutline,
-} from "@heroicons/react/24/outline";
-import Paragraph from "../typography/Paragraph";
-import { Cog8ToothIcon, HomeIcon } from "@heroicons/react/20/solid";
-import Title from "../typography/Title";
-import Badge from "../badges/Badge";
-import SliderRange from "../slider/SliderRange";
-import Input from "../inputs/Input";
-import { Link, useLocation } from "react-router";
-import { apiRequest } from "../../utils/apiProvider";
-import { POST_PLANS, POST_REGIONS } from "../../utils/endPoints";
-import { useCookies } from "react-cookie";
+} from '@heroicons/react/24/outline';
+import Paragraph from '../typography/Paragraph';
+import { Cog8ToothIcon, HomeIcon } from '@heroicons/react/20/solid';
+import Title from '../typography/Title';
+import Badge from '../badges/Badge';
+// import SliderRange from "../slider/SliderRange";
+import Input from '../inputs/Input';
+import { Link, useLocation } from 'react-router';
+import { apiRequest } from '../../utils/apiProvider';
+import { POST_PLANS, POST_REGIONS } from '../../utils/endPoints';
+import { useCookies } from 'react-cookie';
 
 // const periods = ["One month", "Two months", "Three months", "Six months"];
 const NavBar = () => {
@@ -23,11 +23,11 @@ const NavBar = () => {
     value: string;
     label: string;
     price: number;
-  } | null>({ value: "", label: "", price: 0 });
-  const [selectedRange, setSelectedRange] = useState<number>(0);
+  } | null>({ value: '', label: '', price: 0 });
+  // const [selectedRange, setSelectedRange] = useState<number>(0);
   const [openConfig, setOpenConfig] = useState(false);
   const [step, setStep] = useState(1);
-  const [configName, setConfigName] = useState<string>("");
+  const [configName, setConfigName] = useState<string>('');
   const { pathname } = useLocation();
   const [regions, setRegions] = useState<{ value: string; label: string }[]>(
     []
@@ -35,10 +35,10 @@ const NavBar = () => {
   const [periods, setPeriods] = useState<
     { value: string; label: string; price: number }[]
   >([]);
-  const [cookies] = useCookies(["accessToken"]);
+  const [cookies] = useCookies(['accessToken']);
   useEffect(() => {
     if (selectedRegion) {
-      WebApp.MainButton.setText("Next");
+      WebApp.MainButton.setText('Next');
       WebApp.MainButton.show();
     } else {
       WebApp.MainButton.hide();
@@ -48,14 +48,14 @@ const NavBar = () => {
   const fetchData = async () => {
     const token = cookies.accessToken;
     const regionsData = await apiRequest({
-      method: "POST",
+      method: 'POST',
       endpoint: POST_REGIONS,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     const periodsData = await apiRequest({
-      method: "POST",
+      method: 'POST',
       endpoint: POST_PLANS,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -67,29 +67,46 @@ const NavBar = () => {
     setRegions(regionsData.data);
   };
 
+  const handleStep = () => {
+    if (step < 3) {
+      setStep(step + 1);
+    } else {
+      setStep(1);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    setOpenConfig((prev) => {
+      if (prev) {
+        setStep(1);
+        setSelectedPeriod(null);
+        setSelectedRegion(null);
+        setConfigName('');
+      }
+      return !prev;
+    });
   }, []);
 
-  useEffect(() => {
-    const handleMainButtonClick = async () => {
-      WebApp.MainButton.disable();
-      WebApp.MainButton.setText("Next");
-      WebApp.MainButton.enable();
-      setStep(step + 1);
-    };
+  // useEffect(() => {
+  //   const handleMainButtonClick = async () => {
+  //     WebApp.MainButton.disable();
+  //     WebApp.MainButton.setText('Next');
+  //     WebApp.MainButton.enable();
+  //     setStep(step + 1);
+  //   };
 
-    WebApp.MainButton.onClick(handleMainButtonClick);
-    return () => {
-      WebApp.MainButton.offClick(handleMainButtonClick);
-    };
-  }, [selectedRegion, selectedPeriod]);
+  //   WebApp.MainButton.onClick(handleMainButtonClick);
+  //   return () => {
+  //     WebApp.MainButton.offClick(handleMainButtonClick);
+  //   };
+  // }, [selectedRegion, selectedPeriod]);
 
   return (
     <div className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
       <div className="flex items-stretch justify-around gap-6">
-        <Link to={"/"}>
-          {pathname === "/setting" ? (
+        <Link to={'/'}>
+          {pathname === '/setting' ? (
             <HomeIconOutline className="size-7 text-primary" />
           ) : (
             <HomeIcon className="size-7 text-primary" />
@@ -103,21 +120,20 @@ const NavBar = () => {
                 setStep(1);
                 setSelectedPeriod(null);
                 setSelectedRegion(null);
-                setConfigName("");
-                setSelectedRange(0);
+                setConfigName('');
+                // setSelectedRange(0);
               }
               return !prev;
             })
-          }
-        >
+          }>
           <PlusIcon
             className={`size-8 text-white transition-all duration-500 ${
-              openConfig ? "rotate-45" : ""
+              openConfig ? 'rotate-45' : ''
             }`}
           />
         </div>
-        <Link to={"/setting"}>
-          {pathname === "/setting" ? (
+        <Link to={'/setting'}>
+          {pathname === '/setting' ? (
             <Cog8ToothIcon className="size-7 text-primary" />
           ) : (
             <Cog6ToothIcon className="size-7 text-secondary-500" />
@@ -127,16 +143,15 @@ const NavBar = () => {
 
       <div
         className={`overflow-hidden transition-all duration-1000 ${
-          openConfig ? "opacity-100 h-auto py-4 px-1" : "opacity-0 h-0 p-0"
-        }`}
-      >
+          openConfig ? 'opacity-100 h-auto py-4 px-1' : 'opacity-0 h-0 p-0'
+        }`}>
         <Title>Create new config</Title>
         <Paragraph light>
           {step === 1
-            ? "select region"
+            ? 'select region'
             : step === 2
-            ? "Select period and traffic"
-            : "Config name and pay"}
+            ? 'Select period and traffic'
+            : 'Config name and pay'}
         </Paragraph>
         {step === 1 ? (
           <div className="grid grid-cols-2 gap-3 my-2">
@@ -147,14 +162,13 @@ const NavBar = () => {
                   onClick={() => setSelectedRegion(region.value)}
                   className={`cursor-pointer !rounded-md text-center ${
                     selectedRegion === region.value
-                      ? "!bg-primary text-white"
-                      : "text-secondary-600"
-                  }`}
-                >
+                      ? '!bg-primary text-white'
+                      : 'text-secondary-600'
+                  }`}>
                   <span className="text-xs inline-block mx-1">
-                    {region.label.split(" ")[0]}
+                    {region.label.split(' ')[0]}
                   </span>
-                  {region.label.split(" ")[1]}
+                  {region.label.split(' ')[1]}
                 </Badge>
               ))}
           </div>
@@ -167,40 +181,27 @@ const NavBar = () => {
                   onClick={() => setSelectedPeriod(period)}
                   className={`cursor-pointer !rounded-md text-center ${
                     selectedPeriod === period
-                      ? "!bg-primary text-white"
-                      : "text-secondary-600"
-                  }`}
-                >
+                      ? '!bg-primary text-white'
+                      : 'text-secondary-600'
+                  }`}>
                   {period.label}
                 </Badge>
               )
             )}
-            {selectedPeriod && (
-              <div className="flex items-center overflow-hidden whitespace-nowrap w-full relative">
-                <div className="inline-block animate-scrollText">
+            {selectedPeriod && Number(selectedPeriod?.value) > 0 && (
+              <div className="flex text-center items-center overflow-hidden whitespace-nowrap w-full relative">
+                <div className="">
                   <Paragraph>
                     {selectedPeriod?.price
-                      ? new Intl.NumberFormat("en-US").format(
+                      ? new Intl.NumberFormat('en-US').format(
                           Number(selectedPeriod?.price)
                         )
-                      : "0"}
+                      : '0'}
                   </Paragraph>
                 </div>
-                <Paragraph className="ml-[-5px] px-2 py-1 bg-white relative z-10">
+                <Paragraph className="ml-[-2px] px-2 py-1 relative z-10">
                   Toman
                 </Paragraph>
-
-                <style>
-                  {`
-      @keyframes scrollText {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
-        }
-        .animate-scrollText {
-          animation: scrollText 10s linear infinite;
-          }
-          `}
-                </style>
               </div>
             )}
             {/* {selectedPeriod && (
@@ -216,27 +217,49 @@ const NavBar = () => {
                 label="Config name"
               />
               <Title>Your config</Title>
-              <div dir="rtl" className="flex justify-between items-center">
+              <div className="flex justify-between items-center">
                 <Paragraph>
                   <span className="text-xs">
-                    {selectedRegion?.split(" ")[0]}
+                    {selectedRegion?.split(' ')[0]}
                   </span>
                   <span>-</span>
                   {configName}
                 </Paragraph>
-                <Paragraph>
-                  {selectedPeriod?.label}
-                </Paragraph>
-                  
+                <Paragraph>{selectedPeriod?.label}</Paragraph>
               </div>
             </div>
           )
         )}
       </div>
-
-      <Paragraph light className="text-center pt-4">
+      {openConfig && (
+        <button
+          onClick={() => {
+            handleStep();
+          }}
+          disabled={
+            step === 1 && selectedRegion === null
+              ? true
+              : step === 2 && selectedPeriod === null
+              ? true
+              : step === 3 && configName === ''
+              ? true
+              : false
+          }
+          className={`w-full cursor-pointer !rounded-md text-center py-2 bg-secondary-100 shadow-[0px_0px_4px] shadow-secondary-500/60 ${
+            step === 1 && selectedRegion !== null
+              ? '!bg-primary !text-white'
+              : step === 2 && selectedPeriod !== null
+              ? '!bg-primary !text-white'
+              : step === 3 && configName !== ''
+              ? '!bg-primary !text-white'
+              : '!bg-secondary-100 !text-secondary-600'
+          }`}>
+          Next
+        </button>
+      )}
+      {/* <Paragraph light className="text-center pt-4">
         @Testmini
-      </Paragraph>
+      </Paragraph> */}
     </div>
   );
 };
