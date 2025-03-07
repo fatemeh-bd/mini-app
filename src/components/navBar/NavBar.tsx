@@ -8,7 +8,7 @@ import Badge from '../badges/Badge';
 import Input from '../inputs/Input';
 import { Link, useLocation } from 'react-router'; // Import 'useLocation' from 'react-router-dom'
 import { useCookies } from 'react-cookie';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '../../utils/apiProvider';
 import { POST_CREATE_PLAN, POST_PLANS, POST_REGIONS } from '../../utils/endPoints';
 
@@ -28,7 +28,7 @@ const NavBar = () => {
     const token = cookies.accessToken;
     const [regions, setRegions] = useState<{ value: string; label: string }[]>([]);
     const [periods, setPeriods] = useState<{ value: string; label: string; price: number }[]>([]);
-
+    const queryClient = useQueryClient();
     const location = useLocation(); // Get the current route
 
     const fetchLocations = async () => {
@@ -79,9 +79,11 @@ const NavBar = () => {
             setConfigName('');
             setOpenConfig(false);
             setError(null);
+            queryClient.invalidateQueries({ queryKey: ['configs'] })
         },
         onError: (error) => {
             setError('Failed to create config');
+            setLoading(false)
         },
     });
 

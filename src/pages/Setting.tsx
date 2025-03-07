@@ -50,7 +50,7 @@ const Setting = () => {
         />
       </div>
       <Title className="text-center">{userInfo?.first_name}</Title>
-      <Badge className="my-4 !rounded-xl [&>div:not(:last-child)]:border-b [&>div]:border-secondary-200 ">
+      {/* <Badge className="my-4 !rounded-xl [&>div:not(:last-child)]:border-b [&>div]:border-secondary-200 ">
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <LanguageIcon className="size-7 bg-secondary-200 rounded-md p-1" />
@@ -99,7 +99,7 @@ const Setting = () => {
             name="feedback"
           />
         </div>
-      </Badge>
+      </Badge> */}
       <Badge className="mt-4 mb-28 !rounded-xl [&>div:not(:last-child)]:border-b [&>div]:border-secondary-200 ">
         <div className="p-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
