@@ -8,7 +8,7 @@ import Badge from '../badges/Badge';
 import Input from '../inputs/Input';
 import {Link, useLocation} from 'react-router';
 import {useCookies} from 'react-cookie';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {apiRequest} from '../../utils/apiProvider';
 import {POST_CREATE_PLAN, POST_PLANS, POST_REGIONS} from '../../utils/endPoints';
 
@@ -48,8 +48,8 @@ const NavBar = () => {
             },
             body: {
                 "userName": configName,
-                "planId": selectedPeriod,
-                "locationId": selectedRegion,
+                "planId": Number(selectedPeriod?.value),
+                "locationId": Number(selectedRegion),
 
             }
         });
@@ -65,6 +65,22 @@ const NavBar = () => {
         });
         setPeriods(periodsData.data);
     };
+
+    const createConfigMutation = useMutation({
+        mutationFn: createConfig,
+        onSuccess: () => {
+            setStep(1);
+            setSelectedPeriod(null);
+            setSelectedRegion(null);
+            setConfigName('');
+            setOpenConfig(false);
+            setError(null)
+        },
+        onError: (error) => {
+            setError('Failed to create config');
+        },
+    });
+    
 
 
     const locationsQuery = useQuery({
@@ -224,10 +240,16 @@ const NavBar = () => {
             )}
             {openConfig && (
                 <button
-                    onClick={handleStep}
-                    className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60`}>
-                    {step === 3 ? 'Create Config' : 'Next'}
-                </button>
+                onClick={()=>{
+                    if (step === 3) {
+                        createConfigMutation.mutate();
+                    } else {
+                        handleStep();
+                    }
+                }}
+                className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60`}>
+                {step === 3 ? 'Create Config' : 'Next'}
+            </button>
             )}
         </div>
     );
