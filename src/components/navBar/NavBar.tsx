@@ -113,7 +113,7 @@ const NavBar = () => {
             if (step < 3) {
                 setStep(step + 1);
             } else {
-                setStep(1);
+                createConfigMutation.mutate();
             }
         }
     };
@@ -256,14 +256,12 @@ const NavBar = () => {
             {openConfig && (
                 <button
                     onClick={() => {
-                        if (step === 3) {
-                            createConfigMutation.mutate();
-                        } else {
+                       
                             handleStep();
-                        }
+                        
                     }}
                     className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60`}
-                    disabled={loading}>
+                    disabled={loading || Boolean(error)}>
                     {loading ? (
                     
                     <div className="lds-ellipsis scale-[0.5] max-h-[10px]"><div></div><div></div><div></div><div></div></div>
