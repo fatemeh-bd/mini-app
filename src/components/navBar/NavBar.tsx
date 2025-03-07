@@ -1,16 +1,16 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
-import {PlusIcon, HomeIcon as HomeIconOutline} from '@heroicons/react/24/outline';
-import {Cog8ToothIcon, HomeIcon} from '@heroicons/react/20/solid';
+import { PlusIcon, HomeIcon as HomeIconOutline } from '@heroicons/react/24/outline';
+import { Cog8ToothIcon, HomeIcon } from '@heroicons/react/20/solid';
 import Title from '../typography/Title';
 import Paragraph from '../typography/Paragraph';
 import Badge from '../badges/Badge';
 import Input from '../inputs/Input';
-import {Link, useLocation} from 'react-router';
-import {useCookies} from 'react-cookie';
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {apiRequest} from '../../utils/apiProvider';
-import {POST_CREATE_PLAN, POST_PLANS, POST_REGIONS} from '../../utils/endPoints';
+import { Link, useLocation } from 'react-router';
+import { useCookies } from 'react-cookie';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { apiRequest } from '../../utils/apiProvider';
+import { POST_CREATE_PLAN, POST_PLANS, POST_REGIONS } from '../../utils/endPoints';
 
 const NavBar = () => {
     const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -18,11 +18,12 @@ const NavBar = () => {
         value: string;
         label: string;
         price: number;
-    } | null>({value: '', label: '', price: 0});
+    } | null>({ value: '', label: '', price: 0 });
     const [openConfig, setOpenConfig] = useState(false);
     const [step, setStep] = useState(1);
     const [configName, setConfigName] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false); // Add loading state
     const [cookies] = useCookies(['accessToken']);
     const token = cookies.accessToken;
     const [regions, setRegions] = useState<{ value: string; label: string }[]>([]);
@@ -40,6 +41,7 @@ const NavBar = () => {
     };
 
     const createConfig = async () => {
+        setLoading(true); // Start loading when mutation begins
         const createConfigData = await apiRequest({
             method: 'POST',
             endpoint: POST_CREATE_PLAN,
@@ -50,9 +52,9 @@ const NavBar = () => {
                 "userName": configName,
                 "planId": Number(selectedPeriod?.value),
                 "locationId": Number(selectedRegion),
-
             }
         });
+        setLoading(false); // End loading after mutation completes
     };
 
     const fetchPeriods = async () => {
@@ -80,8 +82,6 @@ const NavBar = () => {
             setError('Failed to create config');
         },
     });
-    
-
 
     const locationsQuery = useQuery({
         queryKey: ['locations'],
@@ -111,7 +111,8 @@ const NavBar = () => {
             if (step < 3) {
                 setStep(step + 1);
             } else {
-                setStep(1);
+                createConfigMutation.mutate();
+                
             }
         }
     };
@@ -240,16 +241,21 @@ const NavBar = () => {
             )}
             {openConfig && (
                 <button
-                onClick={()=>{
-                    if (step === 3) {
-                        createConfigMutation.mutate();
-                    } else {
-                        handleStep();
-                    }
-                }}
-                className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60`}>
-                {step === 3 ? 'Create Config' : 'Next'}
-            </button>
+                    onClick={() => {
+                       
+                            handleStep();
+                        
+                    }}
+                    className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60`}
+                    disabled={loading}>
+                    {loading ? (
+                        <span>Creating...</span>
+                    ) : step === 3 ? (
+                        'Create Config'
+                    ) : (
+                        'Next'
+                    )}
+                </button>
             )}
         </div>
     );
