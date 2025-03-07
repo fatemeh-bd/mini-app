@@ -34,6 +34,7 @@ const App = () => {
           refreshKey?: string;
           expireDate?: string;
         };
+        
         if (data?.accessToken && data?.refreshKey && data?.expireDate) {
           const expireDate = new Date(data.expireDate);
           const maxAge = Math.floor((expireDate.getTime() - Date.now()) / 1000);
