@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
-import { PlusIcon, HomeIcon as HomeIconOutline } from '@heroicons/react/24/outline';
+import { PlusIcon, HomeIcon as HomeIconOutline , Cog8ToothIcon as Cog8ToothIconOutline } from '@heroicons/react/24/outline';
 import { Cog8ToothIcon, HomeIcon } from '@heroicons/react/20/solid';
 import Title from '../typography/Title';
 import Paragraph from '../typography/Paragraph';
 import Badge from '../badges/Badge';
 import Input from '../inputs/Input';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router'; // Import 'useLocation' from 'react-router-dom'
 import { useCookies } from 'react-cookie';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '../../utils/apiProvider';
@@ -28,6 +28,8 @@ const NavBar = () => {
     const token = cookies.accessToken;
     const [regions, setRegions] = useState<{ value: string; label: string }[]>([]);
     const [periods, setPeriods] = useState<{ value: string; label: string; price: number }[]>([]);
+
+    const location = useLocation(); // Get the current route
 
     const fetchLocations = async () => {
         const regionsData = await apiRequest({
@@ -76,7 +78,7 @@ const NavBar = () => {
             setSelectedRegion(null);
             setConfigName('');
             setOpenConfig(false);
-            setError(null)
+            setError(null);
         },
         onError: (error) => {
             setError('Failed to create config');
@@ -111,8 +113,7 @@ const NavBar = () => {
             if (step < 3) {
                 setStep(step + 1);
             } else {
-                createConfigMutation.mutate();
-                
+                setStep(1);
             }
         }
     };
@@ -142,13 +143,21 @@ const NavBar = () => {
         }
     }, [selectedRegion]);
 
+    // Function to check if current route is active
+    const isActiveRoute = (route: string) => location.pathname === route;
+
     return (
         <div
             className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
-            <div className="flex items-stretch justify-around gap-6">
-                <Link to={'/'}>
-                    <HomeIconOutline className="size-7 text-primary"/>
-                </Link>
+            <div className="flex items-stretch justify-around gap-6 !text-primary'">
+            <Link to={'/'}>
+    {isActiveRoute('/') ? (
+        <HomeIcon className='text-primary size-7' />
+    ) : (
+        <HomeIconOutline className='text-secondary-600 size-7' />
+    )}
+</Link>
+
                 <div
                     className="bg-primary p-3 rounded-full absolute -top-6 cursor-pointer"
                     onClick={() =>
@@ -169,8 +178,13 @@ const NavBar = () => {
                     />
                 </div>
                 <Link to={'/setting'}>
-                    <Cog8ToothIcon className="size-7 text-primary"/>
-                </Link>
+    {isActiveRoute('/setting') ? (
+        <Cog8ToothIcon className='text-primary size-7' />
+    ) : (
+        <Cog8ToothIconOutline className='text-secondary-600 size-7' />
+    )}
+</Link>
+
             </div>
 
             <div
@@ -242,14 +256,17 @@ const NavBar = () => {
             {openConfig && (
                 <button
                     onClick={() => {
-                       
+                        if (step === 3) {
+                            createConfigMutation.mutate();
+                        } else {
                             handleStep();
-                        
+                        }
                     }}
                     className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60`}
                     disabled={loading}>
                     {loading ? (
-                        <span>Creating...</span>
+                    
+                    <div className="lds-ellipsis scale-[0.5] max-h-[10px]"><div></div><div></div><div></div><div></div></div>
                     ) : step === 3 ? (
                         'Create Config'
                     ) : (
