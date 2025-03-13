@@ -8,6 +8,7 @@ import { apiRequest } from "../utils/apiProvider";
 import { POST_GET_MY_CONFIGS } from "../utils/endPoints";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton from "../components/Skeleton/Skeleton";
+import ConfigCard from "../components/configCard/ConfigCard";
 
 const Home = () => {
   const [cookies] = useCookies(['accessToken']);
@@ -49,7 +50,7 @@ const Home = () => {
       }
     });
     // @ts-ignore
-    return configsData.data; // Return the data directly
+    return configsData.data;
   };
 
   const { data: configs, isLoading } = useQuery({
@@ -81,23 +82,8 @@ const Home = () => {
         </div>
       ) : configs?.length > 0 ? (
         <div className="flex flex-col gap-3 px-2 pt-2">
-          {configs.map((config) => (
-            <Badge key={config.subLink} className="p-2 py-4 rounded-lg">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex-1 flex items-center gap-2">
-                  <span>{config.userName}</span>
-                  <div className="w-full">
-                    <div className="w-full bg-gray-200 h-2 rounded-lg">
-                      <div
-                        className="bg-blue-500 h-2 rounded-lg"
-                        style={{ width: `${(config.consumptionVolume / config.totalVolume) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <span>{config.planeEnName}</span>
-              </div>
-            </Badge>
+          {configs.map((config: any) => (
+           <ConfigCard config={config}/>
           ))}
         </div>
       ) : (
