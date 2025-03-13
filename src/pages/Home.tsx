@@ -81,7 +81,7 @@ const Home = () => {
        
         </div>
       ) : configs?.length > 0 ? (
-        <div className="flex flex-col gap-3 px-2 pt-2">
+        <div className="flex flex-col gap-3 px-2 pt-2 pb-[56px]">
           {configs.map((config: any) => (
            <ConfigCard config={config}/>
           ))}
