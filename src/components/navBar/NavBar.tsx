@@ -114,6 +114,7 @@ const NavBar = () => {
       setOpenConfig(false);
       setError(null);
       queryClient.invalidateQueries({ queryKey: ["configs"] });
+      queryClient.invalidateQueries({ queryKey: ["balance"] });
       showConfettiExplosion();
     },
     onError: (_error) => {
@@ -218,18 +219,22 @@ const NavBar = () => {
         <div
           className="bg-primary p-3 rounded-full absolute -top-6 cursor-pointer"
           onClick={() =>
+          {
             setOpenConfig((prev) => {
-              if (prev) {
-                setStep(1);
-                setSelectedPeriod(null);
-                setSelectedRegion(null);
-                setConfigName("");
-              }
-              return !prev;
-            })
+                if (prev) {
+                  setStep(1);
+                  setSelectedPeriod(null);
+                  setSelectedRegion(null);
+                  setConfigName("");
+                }
+                return !prev;
+              })
+              setError(null)
+          }
           }
         >
           <PlusIcon
+
             className={`size-8 text-white transition-all duration-500 ${
               openConfig ? "rotate-45" : ""
             }`}

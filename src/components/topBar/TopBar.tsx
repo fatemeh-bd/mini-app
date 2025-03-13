@@ -40,7 +40,7 @@ const TopBar = () => {
       <DropdownMenu
         isOpenLeft
         component={
-          <Badge className="flex gap-x-2 items-center">
+          <Badge className="flex min-w-[40px] min-h-[40px] gap-x-2 items-center">
             {userInfo.first_name && (
               <>
                 <img
