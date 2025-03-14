@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import WebApp from "@twa-dev/sdk";
 import {
   PlusIcon,
   HomeIcon as HomeIconOutline,
@@ -173,17 +172,32 @@ const NavBar = () => {
   };
 
   const handleStep = async () => {
-    // Reset the error state before validation
     setError(null);
     HapticMedium();
-    // Validate the current step
     const isValid = handleValidate();
-
+  
     if (isValid) {
+      if (step === 1 && !selectedRegion) {
+        setError("لطفا یک کشور انتخاب کنید");
+        HapticNotificationOccurredError();
+        return;
+      }
+  
+      if (step === 2 && !selectedPeriod?.value) {
+        setError("لطفا یک بازه زمانی انتخاب کنید");
+        HapticNotificationOccurredError();
+        return;
+      }
+  
+      if (step === 3 && !configName) {
+        setError("لطفا نام کانفیگ را وارد کنید");
+        HapticNotificationOccurredError();
+        return;
+      }
+  
       if (step < 3) {
         setStep(step + 1);
       } else {
-        // Check if user has enough balance
         if (
           userInfo &&
           selectedPeriod &&
@@ -200,6 +214,7 @@ const NavBar = () => {
       HapticNotificationOccurredError();
     }
   };
+  
 
   useEffect(() => {
     handleValidate();
@@ -347,7 +362,6 @@ const NavBar = () => {
         <button
           onClick={() => {
             handleStep();
-            console.log(userInfo);
           }}
           className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-3 `}
           disabled={loading || Boolean(error)}
