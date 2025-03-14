@@ -4,11 +4,13 @@ import ClipboardCopy from "../clipboardCopy/ClipboardCopy";
 import { formatBytes, HapticHeavy } from "../../utils/Utilitis";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiProvider";
+import { useShowPopup } from "@zakarliuka/react-telegram-web-tools";
 import {
   POST_CREATE_PLAN,
   POST_DELETE_CONFIG_BY_ID,
 } from "../../utils/endPoints";
 import { useCookies } from "react-cookie";
+import WebApp from "@twa-dev/sdk";
 
 interface Config {
   subLink: string;
@@ -38,6 +40,8 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
   const [deleteLodaing, setDeleteLoading] = useState(false);
   const progressPercentage =
     (config.consumptionVolume / config.totalVolume) * 100;
+  const showPopup = useShowPopup();
+
   const deleteConfig = async () => {
     setDeleteLoading(true);
     const deleteConfigData = await apiRequest({
@@ -49,6 +53,7 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
     });
     setDeleteLoading(false);
   };
+
   const deleteConfigMutation = useMutation({
     mutationFn: deleteConfig,
     onSuccess: () => {
@@ -58,6 +63,48 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
       // @ts-ignore
     },
   });
+  
+  const handleShowPopup = () => {
+    let userInput = "";
+  
+    // Show an alert before asking for input
+    WebApp.showAlert(
+      "کاربر گرامی در نظر داشته باشید هر گیگ حجم اضافه 1000 تومان محاسبه خواهد شد",
+      () => {
+        while (true) {
+          userInput = prompt("لطفاً حجم مورد نظر را به عدد وارد کنید (حداکثر 50 گیگ)", "") || "";
+  
+          // Convert input to a number and validate
+          const userNumber = Number(userInput);
+  
+          if (!isNaN(userNumber) && userNumber > 0 && userNumber <= 50) {
+            break; // Valid input, exit loop
+          }
+  
+          alert("حداکثر افزایش حجم 50 گیگابایت می‌باشد");
+        }
+  
+        // Show confirmation popup
+        WebApp.showPopup(
+          {
+            title: "تأیید مقدار",
+            message: `مقدار ${userInput} گیگابایت تأیید شود؟`,
+            buttons: [
+              { id: "cancel", type: "close", text: "خروج" },
+              { id: "ok", type: "ok", text: "تأیید" },
+            ],
+          },
+          (buttonId) => {
+            if (buttonId === "ok") {
+              console.log("User input confirmed:", userInput);
+            }
+          }
+        );
+      }
+    );
+  };
+  
+
   return (
     <Badge
       key={config.subLink}
@@ -137,7 +184,7 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
           </div>
 
           <div className="flex items-center justify-between gap-2 mt-3">
-            <button className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">
+            <button  onClick={handleShowPopup} className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">
               حجم
             </button>
             {config.isRenewal && (

@@ -104,8 +104,8 @@ const NavBar = () => {
         locationId: Number(selectedRegion),
       },
     });
-    return createConfigData
     setLoading(false); // End loading after mutation completes
+    return createConfigData
   };
 
   const fetchPeriods = async () => {
