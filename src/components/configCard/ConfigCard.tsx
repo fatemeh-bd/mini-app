@@ -1,13 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Badge from "../badges/Badge";
 import ClipboardCopy from "../clipboardCopy/ClipboardCopy";
-import {
-  formatBytes,
-  HapticHeavy,
-  HapticMedium,
-  HapticNotificationOccurredError,
-} from "../../utils/Utilitis";
-import WebApp from "@twa-dev/sdk";
+import { formatBytes, HapticHeavy } from "../../utils/Utilitis";
+
 interface Config {
   subLink: string;
   userName: string;
@@ -20,24 +15,25 @@ interface Config {
 
 interface BadgeComponentProps {
   config: Config;
+  isOpen: boolean;
+  toggleOpen: () => void;
 }
 
-const ConfigCard: React.FC<BadgeComponentProps> = ({ config }) => {
+const ConfigCard: React.FC<BadgeComponentProps> = ({
+  config,
+  isOpen,
+  toggleOpen,
+}) => {
   const progressPercentage =
     (config.consumptionVolume / config.totalVolume) * 100;
-  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Badge
       key={config.subLink}
-      className={`px-2  rounded-lg ${isOpen ? "pt-3" : "py-3"}`}
+      className={`px-2 rounded-lg ${isOpen ? "pt-3" : "py-3"}`}
     >
-      <div
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
-        className=" items-center justify-between gap-2"
-      >
-        <div className="flex items-center justify-between ">
+      <div onClick={toggleOpen} className="items-center justify-between gap-2">
+        <div className="flex items-center justify-between">
           <span className="font-medium">{config.userName}</span>
           <span>{config.planeEnName}</span>
         </div>
@@ -82,8 +78,9 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({ config }) => {
             />
             <div>
               {config.connections.length > 0 &&
-                config.connections.map((connection) => (
+                config.connections.map((connection, index) => (
                   <ClipboardCopy
+                    key={index}
                     url={String(connection.link)}
                     title="کپی لینک اتصال"
                     icon={
@@ -105,7 +102,6 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({ config }) => {
                     }
                   />
                 ))}
-                
             </div>
           </div>
 
@@ -113,16 +109,17 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({ config }) => {
             <button className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">
               حجم
             </button>
-            {config.isRenewal ? (
+            {config.isRenewal && (
               <button className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">
                 تمدید
               </button>
-            ) : (
-              ""
             )}
 
             <button
-              onClick={() => HapticHeavy()}
+              onClick={() => {
+                toggleOpen(); // Close the card
+                HapticHeavy();
+              }}
               className="w-full cursor-pointer !bg-error !text-white !rounded-md text-center py-2"
             >
               حذف

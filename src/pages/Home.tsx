@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import Skeleton from "../components/Skeleton/Skeleton";
 import ConfigCard from "../components/configCard/ConfigCard";
 import { formatBytes } from "../utils/Utilitis";
+import ConfigMap from "../components/configCard/ConfigMap";
 
 const Home = () => {
   const [cookies] = useCookies(["accessToken"]);
@@ -91,9 +92,7 @@ const Home = () => {
         </div>
       ) : configs?.length > 0 ? (
         <div className="flex flex-col gap-3 px-2 pt-2 pb-[56px]">
-          {configs.map((config: any) => (
-            <ConfigCard config={config} />
-          ))}
+          <ConfigMap data={configs}/>
         </div>
       ) : (
         <div className="h-[100%] flex justify-center items-center overflow-auto">

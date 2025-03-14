@@ -18,18 +18,16 @@ const ClipboardCopy: React.FC<ClipboardCopyProps> = ({ title, url = '', icon }) 
     textArea.select();
     try {
       document.execCommand('copy');
-      showAlert('Link copied to clipboard!'); // Use Telegram's showAlert for feedback
+      showAlert('لینک با موفقیت کپی شد'); // Use Telegram's showAlert for feedback
     } catch (err) {
-      console.error('Fallback: Failed to copy: ', err);
-      showAlert('Failed to copy to clipboard. Please try again.'); // Use Telegram's showAlert for feedback
+      showAlert('مشکلی در کپی لینک وجود دارد'); // Use Telegram's showAlert for feedback
     }
     document.body.removeChild(textArea);
   };
 
   const copyToClipboard = async () => {
     if (!url) {
-      console.error('No URL provided to copy.');
-      showAlert('No URL to copy.'); // Use Telegram's showAlert for feedback
+      showAlert('مشکلی در کپی لینک وجود دارد'); // Use Telegram's showAlert for feedback
       return;
     }
 
@@ -37,10 +35,8 @@ const ClipboardCopy: React.FC<ClipboardCopyProps> = ({ title, url = '', icon }) 
       try {
         await navigator.clipboard.writeText(url);
    
-        showAlert('Link copied to clipboard!'); // Use Telegram's showAlert for feedback
-        
+        showAlert('لینک با موفقیت کپی شد'); // Use Telegram's showAlert for feedback
       } catch (err) {
-        console.error('Failed to copy: ', err);
         fallbackCopyToClipboard(url); // Fallback to the alternative method
       }
     } else {
