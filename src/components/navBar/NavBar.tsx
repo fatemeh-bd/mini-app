@@ -232,15 +232,6 @@ const NavBar = () => {
     handleValidate();
   }, [selectedRegion, selectedPeriod, configName]);
 
-  // useEffect(() => {
-  //   if (selectedRegion) {
-  //     WebApp.MainButton.setText("Next");
-  //     WebApp.MainButton.show();
-  //   } else {
-  //     WebApp.MainButton.hide();
-  //   }
-  // }, [selectedRegion]);
-
   // Function to check if current route is active
   const isActiveRoute = (route: string) => location.pathname === route;
 

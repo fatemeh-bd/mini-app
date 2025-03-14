@@ -31,6 +31,7 @@ const TopBar = () => {
     }
   };
 
+
   const query = useQuery({ queryKey: ["balance"], queryFn: fetchUserBalance });
   useEffect(() => {
     query && queryClient.invalidateQueries({ queryKey: ["balance"] });

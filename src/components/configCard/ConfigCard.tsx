@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import Badge from "../badges/Badge";
 import ClipboardCopy from "../clipboardCopy/ClipboardCopy";
-import { formatBytes, HapticHeavy } from "../../utils/Utilitis";
+import {
+  formatBytes,
+  HapticHeavy,
+  HapticNotificationOccurredError,
+  HapticNotificationOccurredSuccess,
+  HapticNotificationOccurredWarning,
+} from "../../utils/Utilitis";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiProvider";
-import { useShowPopup } from "@zakarliuka/react-telegram-web-tools";
+
 import {
-  POST_CREATE_PLAN,
   POST_DELETE_CONFIG_BY_ID,
+  POST_INCREASE_VOLUME,
 } from "../../utils/endPoints";
 import { useCookies } from "react-cookie";
 import WebApp from "@twa-dev/sdk";
@@ -40,7 +46,7 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
   const [deleteLodaing, setDeleteLoading] = useState(false);
   const progressPercentage =
     (config.consumptionVolume / config.totalVolume) * 100;
-  const showPopup = useShowPopup();
+  const [userInputValue, setUserInputValue] = useState("");
 
   const deleteConfig = async () => {
     setDeleteLoading(true);
@@ -52,58 +58,95 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
       },
     });
     setDeleteLoading(false);
+    return deleteConfigData;
   };
 
   const deleteConfigMutation = useMutation({
     mutationFn: deleteConfig,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["configs"] });
+      HapticNotificationOccurredSuccess();
     },
     onError: (error) => {
-      // @ts-ignore
+      HapticNotificationOccurredError();
+      return error;
     },
   });
+
+  const increaseConfig = async ({ userInputValue }: { userInputValue: string | number }) => {
+    const increaseConfigData = await apiRequest({
+      method: "POST",
+      endpoint: POST_INCREASE_VOLUME,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: {
+        clientId: Number(config.id),
+        unitGB: Number(userInputValue),
+      },
+    });
   
+    setDeleteLoading(false);
+    return increaseConfigData;
+  };
+  
+  
+
+  const increaseConfigMutation = useMutation({
+    mutationFn: increaseConfig,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["configs"] });
+      setUserInputValue("");
+      HapticNotificationOccurredSuccess();
+    },
+    onError: (error) => {
+      HapticNotificationOccurredError();
+      return error;
+    },
+  });
+
   const handleShowPopup = () => {
     let userInput = "";
-  
-    // Show an alert before asking for input
+
     WebApp.showAlert(
       "کاربر گرامی در نظر داشته باشید هر گیگ حجم اضافه 1000 تومان محاسبه خواهد شد",
       () => {
         while (true) {
-          userInput = prompt("لطفاً حجم مورد نظر را به عدد وارد کنید (حداکثر 50 گیگ)", "") || "";
-  
-          // Convert input to a number and validate
-          const userNumber = Number(userInput);
-  
-          if (!isNaN(userNumber) && userNumber > 0 && userNumber <= 50) {
-            break; // Valid input, exit loop
+          HapticNotificationOccurredWarning();
+          userInput = prompt(
+            "لطفاً حجم مورد نظر را به عدد وارد کنید (حداکثر 50 گیگ)",
+            ""
+          );
+          if (userInput === null) {
+            return;
           }
-  
+          const userNumber = Number(userInput);
+          if (!isNaN(userNumber) && userNumber > 0 && userNumber <= 50) {
+            break;
+          }
+
+          HapticNotificationOccurredError();
           alert("حداکثر افزایش حجم 50 گیگابایت می‌باشد");
         }
-  
-        // Show confirmation popup
         WebApp.showPopup(
           {
             title: "تأیید مقدار",
             message: `مقدار ${userInput} گیگابایت تأیید شود؟`,
             buttons: [
-              { id: "cancel", type: "close", text: "خروج" },
               { id: "ok", type: "ok", text: "تأیید" },
+              { id: "cancel", type: "close", text: "خروج" },
             ],
           },
           (buttonId) => {
             if (buttonId === "ok") {
-              console.log("User input confirmed:", userInput);
+              increaseConfigMutation.mutate({ userInputValue: userInput });
+              
             }
           }
         );
       }
     );
   };
-  
 
   return (
     <Badge
@@ -184,8 +227,11 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
           </div>
 
           <div className="flex items-center justify-between gap-2 mt-3">
-            <button  onClick={handleShowPopup} className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">
-              حجم
+            <button
+              onClick={handleShowPopup}
+              className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2"
+            >
+              افزایش حجم
             </button>
             {config.isRenewal && (
               <button className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">

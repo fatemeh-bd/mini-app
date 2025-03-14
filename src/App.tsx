@@ -26,19 +26,23 @@ const App = () => {
         body: { initdata: initData },
         headers: { "Content-Type": "application/json" },
       });
-  
+
       // اطمینان از اینکه پاسخ دارای `data` است
-      if (typeof response === "object" && response !== null && "data" in response) {
+      if (
+        typeof response === "object" &&
+        response !== null &&
+        "data" in response
+      ) {
         const data = response.data as {
           accessToken?: string;
           refreshKey?: string;
           expireDate?: string;
         };
-        
+
         if (data?.accessToken && data?.refreshKey && data?.expireDate) {
           const expireDate = new Date(data.expireDate);
           const maxAge = Math.floor((expireDate.getTime() - Date.now()) / 1000);
-  
+
           setCookie("accessToken", data.accessToken, {
             path: "/",
             httpOnly: false,
@@ -59,7 +63,6 @@ const App = () => {
       setIsLoading(false);
     }
   };
-  
 
   useEffect(() => {
     if (initData) {
@@ -75,6 +78,13 @@ const App = () => {
       WebApp.expand();
       if (WebApp.initDataUnsafe?.user) {
         setUserInfo(WebApp.initDataUnsafe.user as UserInfo_type);
+        // if (WebApp.platform == "ios") {
+        //   WebApp.onEvent("viewportChanged", () => {
+        //     setTimeout(() => {
+        //       document.documentElement.scrollTop = 12000;
+        //     }, 700);
+        //   });
+        // }
       }
     } else {
       console.error("WebApp is not loaded");
