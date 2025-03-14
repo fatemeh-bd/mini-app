@@ -9,6 +9,7 @@ interface Config {
   planeEnName: string;
   isRenewal: boolean;
   connections: string[];
+  id: string | number; // Ensure id can be used as a unique key
 }
 
 interface ConfigMapProps {
@@ -16,20 +17,20 @@ interface ConfigMapProps {
 }
 
 const ConfigMap: React.FC<ConfigMapProps> = ({ data }) => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openId, setOpenId] = useState<string | number | null>(null);
 
-  const toggleOpen = (index: number) => {
-    setOpenIndex((prevIndex) => (prevIndex === index ? null : index));
+  const toggleOpen = (id: string | number) => {
+    setOpenId((prevId) => (prevId === id ? null : id));
   };
 
   return (
     <>
-      {data.map((config, index) => (
+      {data.map((config) => (
         <ConfigCard
-          key={config.subLink}
+          key={config.id} // Use id as the key
           config={config}
-          isOpen={index === openIndex}
-          toggleOpen={() => toggleOpen(index)}
+          isOpen={config.id === openId} // Compare with openId
+          toggleOpen={() => toggleOpen(config.id)} // Use config.id
         />
       ))}
     </>

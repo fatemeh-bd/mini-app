@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Badge from "../badges/Badge";
 import ClipboardCopy from "../clipboardCopy/ClipboardCopy";
 import { formatBytes, HapticHeavy } from "../../utils/Utilitis";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "../../utils/apiProvider";
+import {
+  POST_CREATE_PLAN,
+  POST_DELETE_CONFIG_BY_ID,
+} from "../../utils/endPoints";
+import { useCookies } from "react-cookie";
 
 interface Config {
   subLink: string;
@@ -11,6 +18,7 @@ interface Config {
   planeEnName: string;
   isRenewal: boolean;
   connections: string[];
+  id: string | number;
 }
 
 interface BadgeComponentProps {
@@ -24,9 +32,32 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
   isOpen,
   toggleOpen,
 }) => {
+  const queryClient = useQueryClient();
+  const [cookies] = useCookies(["accessToken"]);
+  const token = cookies.accessToken;
+  const [deleteLodaing, setDeleteLoading] = useState(false);
   const progressPercentage =
     (config.consumptionVolume / config.totalVolume) * 100;
-
+  const deleteConfig = async () => {
+    setDeleteLoading(true);
+    const deleteConfigData = await apiRequest({
+      method: "POST",
+      endpoint: POST_DELETE_CONFIG_BY_ID + config.id,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setDeleteLoading(false);
+  };
+  const deleteConfigMutation = useMutation({
+    mutationFn: deleteConfig,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["configs"] });
+    },
+    onError: (error) => {
+      // @ts-ignore
+    },
+  });
   return (
     <Badge
       key={config.subLink}
@@ -117,12 +148,22 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
 
             <button
               onClick={() => {
-                toggleOpen(); // Close the card
                 HapticHeavy();
+                deleteConfigMutation.mutate();
               }}
+              disabled={deleteLodaing}
               className="w-full cursor-pointer !bg-error !text-white !rounded-md text-center py-2"
             >
-              حذف
+              {deleteLodaing ? (
+                <div className="lds-ellipsis scale-[0.5] max-h-[10px]">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                "حذف"
+              )}
             </button>
           </div>
         </div>

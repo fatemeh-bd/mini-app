@@ -63,23 +63,32 @@ const NavBar = () => {
     });
     // @ts-ignore
     setRegions(regionsData.data);
+    return regionsData;
   };
 
   const showConfettiExplosion = () => {
     const container = document.createElement("div");
     document.body.appendChild(container);
     const root = createRoot(container);
-    root.render(
-      <ConfettiExplosion
-        particleCount={150}
-        className="fixed top-0 z-[99] left-[50%] translate-x-[-50%]"
-      />
-    );
+  
+    container.style.position = "fixed";
+    container.style.top = "0";
+    container.style.left = "50%";
+    container.style.transform = "translateX(-50%)";
+    container.style.zIndex = "9999"; // Ensure it's above everything
+  
+    root.render(<ConfettiExplosion particleCount={150} />);
+    
     setTimeout(() => {
       root.unmount();
       document.body.removeChild(container);
     }, 3000);
   };
+
+  // useEffect(()=>{
+  //   showConfettiExplosion()
+  // },[])
+  
 
   const createConfig = async () => {
     setLoading(true); // Start loading when mutation begins
@@ -95,6 +104,7 @@ const NavBar = () => {
         locationId: Number(selectedRegion),
       },
     });
+    return createConfigData
     setLoading(false); // End loading after mutation completes
   };
 
@@ -108,6 +118,7 @@ const NavBar = () => {
     });
     // @ts-ignore
     setPeriods(periodsData.data);
+    return periodsData
   };
 
   const createConfigMutation = useMutation({
@@ -124,8 +135,9 @@ const NavBar = () => {
       showConfettiExplosion();
       HapticNotificationOccurredSuccess();
     },
-    onError: (_error) => {
-      setError("Failed to create config");
+    onError: (error) => {
+      // @ts-ignore
+      setError(error);
       HapticNotificationOccurredError();
       setLoading(false);
     },
@@ -358,6 +370,7 @@ const NavBar = () => {
           {error && <span className="text-red-500">{error}</span>}
         </div>
       )}
+     
       {openConfig && (
         <button
           onClick={() => {
@@ -380,6 +393,7 @@ const NavBar = () => {
           )}
         </button>
       )}
+     
     </div>
   );
 };

@@ -25,6 +25,7 @@ const TopBar = () => {
       });
       // @ts-ignore
       setUserInfo({ ...userInfo, balance: String(balance.data) });
+      return balance;
     } catch (error) {
       console.error("Failed to fetch user balance:", error);
     }
