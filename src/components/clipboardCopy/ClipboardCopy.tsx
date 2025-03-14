@@ -49,7 +49,7 @@ const ClipboardCopy: React.FC<ClipboardCopyProps> = ({ title, url = '', icon }) 
   };
 
   return (
-    <div onClick={copyToClipboard} className='pt-1' style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+    <div dir='rtl' onClick={copyToClipboard} className='pt-1' style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
       {icon}
       <span style={{ marginLeft: '4px' }}>{title}</span>
     </div>

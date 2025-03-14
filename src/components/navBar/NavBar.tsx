@@ -22,6 +22,13 @@ import {
 import { createRoot } from "react-dom/client";
 import ConfettiExplosion from "react-confetti-explosion";
 import useUserStore from "../../store/userStore";
+import {
+  HapticLight,
+  HapticMedium,
+  HapticNotificationOccurredError,
+  HapticNotificationOccurredSuccess,
+  HapticSelectionChanged,
+} from "../../utils/Utilitis";
 
 const NavBar = () => {
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -116,9 +123,11 @@ const NavBar = () => {
       queryClient.invalidateQueries({ queryKey: ["configs"] });
       queryClient.invalidateQueries({ queryKey: ["balance"] });
       showConfettiExplosion();
+      HapticNotificationOccurredSuccess();
     },
     onError: (_error) => {
       setError("Failed to create config");
+      HapticNotificationOccurredError();
       setLoading(false);
     },
   });
@@ -140,7 +149,8 @@ const NavBar = () => {
 
     const isEnglish = /^[A-Za-z0-9\s]*$/.test(value); // Check for non-English characters
     if (step === 3 && value && !isEnglish) {
-      setError("Please use English");
+      HapticNotificationOccurredError();
+      setError("نام کانفیگ باید به انگلیسی باشد");
     } else {
       setError(null);
     }
@@ -148,13 +158,13 @@ const NavBar = () => {
 
   const handleValidate = () => {
     if (step === 1 && !selectedRegion) {
-      setError("Please select a region");
+      setError("لطفا یک کشور انتخاب کنید");
       return false;
     } else if (step === 2 && selectedPeriod?.value === "") {
-      setError("Please select a period");
+      setError("لطفا یک بازه زمانی انتخاب کنید");
       return false;
     } else if (step === 3 && !configName) {
-      setError("Please enter a name for your configuration");
+      setError("لطفا نام کانفیگ را وارد کنید");
       return false;
     } else {
       setError(null);
@@ -165,10 +175,10 @@ const NavBar = () => {
   const handleStep = async () => {
     // Reset the error state before validation
     setError(null);
-  
+    HapticMedium();
     // Validate the current step
     const isValid = handleValidate();
-  
+
     if (isValid) {
       if (step < 3) {
         setStep(step + 1);
@@ -183,30 +193,32 @@ const NavBar = () => {
           createConfigMutation.mutate();
         } else {
           setError("Not enough balance");
+          HapticNotificationOccurredError();
         }
       }
+    } else {
+      HapticNotificationOccurredError();
     }
   };
 
   useEffect(() => {
     handleValidate();
   }, [selectedRegion, selectedPeriod, configName]);
-  
 
-  useEffect(() => {
-    if (selectedRegion) {
-      WebApp.MainButton.setText("Next");
-      WebApp.MainButton.show();
-    } else {
-      WebApp.MainButton.hide();
-    }
-  }, [selectedRegion]);
+  // useEffect(() => {
+  //   if (selectedRegion) {
+  //     WebApp.MainButton.setText("Next");
+  //     WebApp.MainButton.show();
+  //   } else {
+  //     WebApp.MainButton.hide();
+  //   }
+  // }, [selectedRegion]);
 
   // Function to check if current route is active
   const isActiveRoute = (route: string) => location.pathname === route;
 
   return (
-    <div className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
+    <div dir="rtl" className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
       <div className="flex items-stretch justify-around gap-6 !text-primary'">
         <Link to={"/"}>
           {isActiveRoute("/") ? (
@@ -218,23 +230,21 @@ const NavBar = () => {
 
         <div
           className="bg-primary p-3 rounded-full absolute -top-6 cursor-pointer"
-          onClick={() =>
-          {
+          onClick={() => {
             setOpenConfig((prev) => {
-                if (prev) {
-                  setStep(1);
-                  setSelectedPeriod(null);
-                  setSelectedRegion(null);
-                  setConfigName("");
-                }
-                return !prev;
-              })
-              setError(null)
-          }
-          }
+              if (prev) {
+                setStep(1);
+                setSelectedPeriod(null);
+                setSelectedRegion(null);
+                setConfigName("");
+              }
+              HapticSelectionChanged();
+              return !prev;
+            });
+            setError(null);
+          }}
         >
           <PlusIcon
-
             className={`size-8 text-white transition-all duration-500 ${
               openConfig ? "rotate-45" : ""
             }`}
@@ -254,20 +264,23 @@ const NavBar = () => {
           openConfig ? "opacity-100 h-auto pt-4 px-1" : "opacity-0 h-0 p-0"
         }`}
       >
-        <Title>Create new config</Title>
+        <Title>ساخت کانفیگ جدید</Title>
         <Paragraph light>
           {step === 1
-            ? "Select region"
+            ? "کشور مورد نظر خود را انتخاب کنید"
             : step === 2
-            ? "Select period and traffic"
-            : "Config name and pay"}
+            ? "بازه زمانی و مقدار ترافیک را انتخاب کنید"
+            : ""}
         </Paragraph>
         {step === 1 ? (
           <div className="grid grid-cols-2 gap-3 my-2">
             {regions.map((region) => (
               <Badge
                 key={region.value}
-                onClick={() => setSelectedRegion(region.value)}
+                onClick={() => {
+                  setSelectedRegion(region.value);
+                  HapticLight();
+                }}
                 className={`cursor-pointer !rounded-md text-center ${
                   selectedRegion === region.value
                     ? "!bg-primary text-white"
@@ -286,7 +299,10 @@ const NavBar = () => {
             {periods.map((period) => (
               <Badge
                 key={period.value}
-                onClick={() => setSelectedPeriod(period)}
+                onClick={() => {
+                  setSelectedPeriod(period);
+                  HapticLight();
+                }}
                 className={`cursor-pointer !rounded-md text-center ${
                   selectedPeriod === period
                     ? "!bg-primary text-white"
@@ -301,18 +317,19 @@ const NavBar = () => {
           step === 3 && (
             <div>
               <Input
-                maxLength={20}
+              dir="ltr"
+                maxLength={15}
                 value={configName}
                 onChange={handleConfigNameChange}
-                label="Config name"
+                label="نام کانفیگ"
               />
-              <Title>Your config</Title>
-              <div className="flex justify-between items-center">
+              <Title>کانفیگ شما</Title>
+              <div dir="ltr" className="flex justify-between items-center">
                 <Paragraph>
                   <span className="text-xs">
                     {selectedRegion?.split(" ")[0]}
                   </span>
-                  <span>-</span>
+                  <span className="mx-1">-</span>
                   {configName}
                 </Paragraph>
                 <Paragraph>{selectedPeriod?.label}</Paragraph>
@@ -332,7 +349,7 @@ const NavBar = () => {
             handleStep();
             console.log(userInfo);
           }}
-          className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2 shadow-[0px_0px_4px] shadow-secondary-500/60`}
+          className={`w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-3 `}
           disabled={loading || Boolean(error)}
         >
           {loading ? (
@@ -343,9 +360,9 @@ const NavBar = () => {
               <div></div>
             </div>
           ) : step === 3 ? (
-            "Create Config"
+            "ساخت کانفیگ"
           ) : (
-            "Next"
+            "بعدی"
           )}
         </button>
       )}

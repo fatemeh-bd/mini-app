@@ -86,7 +86,7 @@ const App = () => {
   }
 
   return (
-    <div className="p-4 bg-white h-svh overflow-auto no-scrollbar">
+    <div className="p-4 bg-white h-svh overflow-auto no-scrollbar max-w-[100vw] overflow-x-hidden">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/setting" element={<Setting />} />
