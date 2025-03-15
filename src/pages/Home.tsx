@@ -8,7 +8,6 @@ import { apiRequest } from "../utils/apiProvider";
 import { POST_GET_MY_CONFIGS } from "../utils/endPoints";
 import { useQuery } from "@tanstack/react-query";
 import Skeleton from "../components/Skeleton/Skeleton";
-import ConfigCard from "../components/configCard/ConfigCard";
 import { formatBytes } from "../utils/Utilitis";
 import ConfigMap from "../components/configCard/ConfigMap";
 
