@@ -14,6 +14,7 @@ import { apiRequest } from "../../utils/apiProvider";
 import {
   POST_DELETE_CONFIG_BY_ID,
   POST_INCREASE_VOLUME,
+  POST_RENEW_CONFIG_BY_ID,
 } from "../../utils/endPoints";
 import { useCookies } from "react-cookie";
 import WebApp from "@twa-dev/sdk";
@@ -24,6 +25,7 @@ interface Config {
   consumptionVolume: number;
   totalVolume: number;
   planeEnName: string;
+  planName: string;
   isRenewal: boolean;
   connections: string[];
   id: string | number;
@@ -44,6 +46,7 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
   const [cookies] = useCookies(["accessToken"]);
   const token = cookies.accessToken;
   const [deleteLodaing, setDeleteLoading] = useState(false);
+  const [renewLoading, setRenewLoading] = useState(false);
   const progressPercentage =
     (config.consumptionVolume / config.totalVolume) * 100;
   const [userInputValue, setUserInputValue] = useState("");
@@ -73,7 +76,11 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
     },
   });
 
-  const increaseConfig = async ({ userInputValue }: { userInputValue: string | number }) => {
+  const increaseConfig = async ({
+    userInputValue,
+  }: {
+    userInputValue: string | number;
+  }) => {
     const increaseConfigData = await apiRequest({
       method: "POST",
       endpoint: POST_INCREASE_VOLUME,
@@ -85,18 +92,40 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
         unitGB: Number(userInputValue),
       },
     });
-  
     setDeleteLoading(false);
     return increaseConfigData;
   };
-  
-  
 
   const increaseConfigMutation = useMutation({
     mutationFn: increaseConfig,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["configs"] });
       setUserInputValue("");
+      HapticNotificationOccurredSuccess();
+    },
+    onError: (error) => {
+      HapticNotificationOccurredError();
+      return error;
+    },
+  });
+
+  const renewConfig = async () => {
+    setRenewLoading(true);
+    const renewConfigData = await apiRequest({
+      method: "POST",
+      endpoint: POST_RENEW_CONFIG_BY_ID + config.id,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setRenewLoading(false);
+    return renewConfigData;
+  }
+
+  const renewConfigMutation = useMutation({
+    mutationFn: renewConfig,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["configs"] });
       HapticNotificationOccurredSuccess();
     },
     onError: (error) => {
@@ -113,6 +142,7 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
       () => {
         while (true) {
           HapticNotificationOccurredWarning();
+          // @ts-ignore
           userInput = prompt(
             "لطفاً حجم مورد نظر را به عدد وارد کنید (حداکثر 50 گیگ)",
             ""
@@ -133,14 +163,15 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
             title: "تأیید مقدار",
             message: `مقدار ${userInput} گیگابایت تأیید شود؟`,
             buttons: [
+              // @ts-ignore
               { id: "ok", type: "ok", text: "تأیید" },
+              // @ts-ignore
               { id: "cancel", type: "close", text: "خروج" },
             ],
           },
           (buttonId) => {
             if (buttonId === "ok") {
               increaseConfigMutation.mutate({ userInputValue: userInput });
-              
             }
           }
         );
@@ -227,15 +258,30 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
           </div>
 
           <div className="flex items-center justify-between gap-2 mt-3">
-            <button
-              onClick={handleShowPopup}
-              className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2"
-            >
-              افزایش حجم
-            </button>
-            {config.isRenewal && (
-              <button className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">
-                تمدید
+            {config.planName !== "پلن تست" && !config.isRenewal && (
+              <button
+                onClick={handleShowPopup}
+                className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2"
+              >
+                افزایش حجم
+              </button>
+            )}
+            {config.isRenewal && config.planName !== 'پلن تست' && (
+              <button
+               onClick={()=>{
+                HapticHeavy()
+                renewConfigMutation.mutate()
+              }} className="w-full cursor-pointer !bg-primary !text-white !rounded-md text-center py-2">
+                 {renewLoading ? (
+                <div className="lds-ellipsis scale-[0.5] max-h-[10px]">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              ) : (
+                "تمدید"
+              )}
               </button>
             )}
 

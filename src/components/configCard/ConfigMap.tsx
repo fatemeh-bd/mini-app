@@ -27,10 +27,11 @@ const ConfigMap: React.FC<ConfigMapProps> = ({ data }) => {
     <>
       {data.map((config) => (
         <ConfigCard
-          key={config.id} // Use id as the key
+          key={config.id}
+          // @ts-ignore
           config={config}
-          isOpen={config.id === openId} // Compare with openId
-          toggleOpen={() => toggleOpen(config.id)} // Use config.id
+          isOpen={config.id === openId} 
+          toggleOpen={() => toggleOpen(config.id)}
         />
       ))}
     </>

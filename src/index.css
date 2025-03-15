@@ -1,4 +1,4 @@
-@import url(/public/DANA/css/fontiran.css);
+@import url(/DANA/css/fontiran.css);
 @import "tailwindcss";
 @config "../tailwind.config.js";
 @theme {

@@ -70,15 +70,15 @@ const NavBar = () => {
     const container = document.createElement("div");
     document.body.appendChild(container);
     const root = createRoot(container);
-  
+
     container.style.position = "fixed";
     container.style.top = "0";
     container.style.left = "50%";
     container.style.transform = "translateX(-50%)";
     container.style.zIndex = "9999"; // Ensure it's above everything
-  
+
     root.render(<ConfettiExplosion particleCount={150} />);
-    
+
     setTimeout(() => {
       root.unmount();
       document.body.removeChild(container);
@@ -88,7 +88,6 @@ const NavBar = () => {
   // useEffect(()=>{
   //   showConfettiExplosion()
   // },[])
-  
 
   const createConfig = async () => {
     setLoading(true); // Start loading when mutation begins
@@ -105,7 +104,7 @@ const NavBar = () => {
       },
     });
     setLoading(false); // End loading after mutation completes
-    return createConfigData
+    return createConfigData;
   };
 
   const fetchPeriods = async () => {
@@ -118,7 +117,7 @@ const NavBar = () => {
     });
     // @ts-ignore
     setPeriods(periodsData.data);
-    return periodsData
+    return periodsData;
   };
 
   const createConfigMutation = useMutation({
@@ -157,7 +156,6 @@ const NavBar = () => {
   const handleConfigNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfigName(value);
-
     const isEnglish = /^[A-Za-z0-9\s]*$/.test(value); // Check for non-English characters
     if (step === 3 && value && !isEnglish) {
       HapticNotificationOccurredError();
@@ -177,6 +175,13 @@ const NavBar = () => {
     } else if (step === 3 && !configName) {
       setError("لطفا نام کانفیگ را وارد کنید");
       return false;
+    } else if (
+      step === 3 &&
+      configName &&
+      !/^[A-Za-z0-9\s]*$/.test(configName)
+    ) {
+      setError("نام کانفیگ باید به انگلیسی باشد");
+      return false;
     } else {
       setError(null);
       return true;
@@ -187,26 +192,26 @@ const NavBar = () => {
     setError(null);
     HapticMedium();
     const isValid = handleValidate();
-  
+
     if (isValid) {
       if (step === 1 && !selectedRegion) {
         setError("لطفا یک کشور انتخاب کنید");
         HapticNotificationOccurredError();
         return;
       }
-  
+
       if (step === 2 && !selectedPeriod?.value) {
         setError("لطفا یک بازه زمانی انتخاب کنید");
         HapticNotificationOccurredError();
         return;
       }
-  
+
       if (step === 3 && !configName) {
         setError("لطفا نام کانفیگ را وارد کنید");
         HapticNotificationOccurredError();
         return;
       }
-  
+
       if (step < 3) {
         setStep(step + 1);
       } else {
@@ -226,7 +231,6 @@ const NavBar = () => {
       HapticNotificationOccurredError();
     }
   };
-  
 
   useEffect(() => {
     handleValidate();
@@ -236,7 +240,10 @@ const NavBar = () => {
   const isActiveRoute = (route: string) => location.pathname === route;
 
   return (
-    <div dir="rtl" className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500">
+    <div
+      dir="rtl"
+      className="fixed transition-all duration-1000 right-0 left-0 h-fit w-full bottom-0 bg-white p-4 shadow-[0px_0px_4px] shadow-secondary-500"
+    >
       <div className="flex items-stretch justify-around gap-6 !text-primary'">
         <Link to={"/"}>
           {isActiveRoute("/") ? (
@@ -335,7 +342,7 @@ const NavBar = () => {
           step === 3 && (
             <div>
               <Input
-              dir="ltr"
+                dir="ltr"
                 maxLength={15}
                 value={configName}
                 onChange={handleConfigNameChange}
@@ -361,7 +368,7 @@ const NavBar = () => {
           {error && <span className="text-red-500">{error}</span>}
         </div>
       )}
-     
+
       {openConfig && (
         <button
           onClick={() => {
@@ -384,7 +391,6 @@ const NavBar = () => {
           )}
         </button>
       )}
-     
     </div>
   );
 };
