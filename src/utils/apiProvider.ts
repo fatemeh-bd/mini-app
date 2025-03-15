@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, Method } from "axios";
 
-// export const BASE_URL = 'https://botapi.zeroai.ir'; //Production
+ export const BASE_URL = 'https://botapi.zeroai.ir'; //Production
 // export const BASE_URL = "https://localhost:7044"; // Development
-export const BASE_URL = "http://192.168.43.39:7044";
+// export const BASE_URL = "http://192.168.43.39:7044";
 
 // const [cookies, setCookie] = useCookies(["accessToken", "refreshKey"]);
 interface RequestOptions {
