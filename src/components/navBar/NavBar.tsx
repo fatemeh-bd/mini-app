@@ -11,7 +11,7 @@ import Badge from "../badges/Badge";
 import Input from "../inputs/Input";
 import { Link, useLocation } from "react-router"; // Import 'useLocation' from 'react-router-dom'
 import { useCookies } from "react-cookie";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation,  useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiProvider";
 import {
   POST_CREATE_PLAN,
@@ -53,7 +53,7 @@ const NavBar = () => {
   const queryClient = useQueryClient();
   const location = useLocation(); // Get the current route
 
-  const fetchLocations = async () => {
+  async () => {
     const regionsData = await apiRequest({
       method: "POST",
       endpoint: POST_REGIONS,
@@ -107,7 +107,7 @@ const NavBar = () => {
     return createConfigData;
   };
 
-  const fetchPeriods = async () => {
+ async () => {
     const periodsData = await apiRequest({
       method: "POST",
       endpoint: POST_PLANS,
@@ -142,15 +142,15 @@ const NavBar = () => {
     },
   });
 
-  const locationsQuery = useQuery({
-    queryKey: ["locations"],
-    queryFn: fetchLocations,
-  });
+  // const locationsQuery = useQuery({
+  //   queryKey: ["locations"],
+  //   queryFn: fetchLocations,
+  // });
 
-  const PeriodsQuery = useQuery({
-    queryKey: ["periods"],
-    queryFn: fetchPeriods,
-  });
+  // const PeriodsQuery = useQuery({
+  //   queryKey: ["periods"],
+  //   queryFn: fetchPeriods,
+  // });
 
   // Handle validation while typing
   const handleConfigNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

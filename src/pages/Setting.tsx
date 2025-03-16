@@ -18,11 +18,11 @@ import {
 } from "../utils/Utilitis";
 import { apiRequest } from "../utils/apiProvider";
 import {
-  POST_GET_USER_POROFILE,
+  // POST_GET_USER_POROFILE,
   POST_UPDATE_TELEGRAM_NOTIFICATION_BY_STATE,
 } from "../utils/endPoints";
 import { useCookies } from "react-cookie";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 const Setting = () => {
   const { userInfo } = useUserStore();
   const [cookies] = useCookies(["accessToken"]);
@@ -63,29 +63,29 @@ const Setting = () => {
         return !prev
       });
     },
-    onError: (error) => {
+    onError: (error:any) => {
       HapticNotificationOccurredError();
       return error;
     },
   });
 
-  const fetchUserProfile = async () => {
-    const periodsData = await apiRequest({
-      method: "POST",
-      endpoint: POST_GET_USER_POROFILE,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    // @ts-ignore
-    setUserData(periodsData.data.sellerInfo.telegarmNotificaiton);
-    return periodsData;
-  };
+  // const fetchUserProfile = async () => {
+  //   const periodsData = await apiRequest({
+  //     method: "POST",
+  //     endpoint: POST_GET_USER_POROFILE,
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+  //   // @ts-ignore
+  //   setUserData(periodsData.data.sellerInfo.telegarmNotificaiton);
+  //   return periodsData;
+  // };
 
-  const profileQuery = useQuery({
-    queryKey: ["profile"],
-    queryFn: fetchUserProfile,
-  });
+  // const profileQuery = useQuery({
+  //   queryKey: ["profile"],
+  //   queryFn: fetchUserProfile,
+  // });
 
   const openSupportChat = () => {
     WebApp.openTelegramLink("https://t.me/nexovp");

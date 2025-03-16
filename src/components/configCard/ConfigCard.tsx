@@ -49,7 +49,7 @@ const ConfigCard: React.FC<BadgeComponentProps> = ({
   const [renewLoading, setRenewLoading] = useState(false);
   const progressPercentage =
     (config.consumptionVolume / config.totalVolume) * 100;
-  const [userInputValue, setUserInputValue] = useState("");
+  const [_, setUserInputValue] = useState("");
 
   const deleteConfig = async () => {
     setDeleteLoading(true);
