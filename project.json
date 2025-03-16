@@ -1,0 +1,7 @@
+{
+    "framework": "vite",
+    "functions": {
+      "nodeVersion": "18.x"
+    }
+  }
+  
