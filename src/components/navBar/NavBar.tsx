@@ -11,7 +11,7 @@ import Badge from "../badges/Badge";
 import Input from "../inputs/Input";
 import { Link, useLocation } from "react-router"; // Import 'useLocation' from 'react-router-dom'
 import { useCookies } from "react-cookie";
-import { useMutation,  useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../../utils/apiProvider";
 import {
   POST_CREATE_PLAN,
@@ -52,19 +52,6 @@ const NavBar = () => {
   >([]);
   const queryClient = useQueryClient();
   const location = useLocation(); // Get the current route
-
-  async () => {
-    const regionsData = await apiRequest({
-      method: "POST",
-      endpoint: POST_REGIONS,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    // @ts-ignore
-    setRegions(regionsData.data);
-    return regionsData;
-  };
 
   const showConfettiExplosion = () => {
     const container = document.createElement("div");
@@ -107,19 +94,6 @@ const NavBar = () => {
     return createConfigData;
   };
 
- async () => {
-    const periodsData = await apiRequest({
-      method: "POST",
-      endpoint: POST_PLANS,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    // @ts-ignore
-    setPeriods(periodsData.data);
-    return periodsData;
-  };
-
   const createConfigMutation = useMutation({
     mutationFn: createConfig,
     onSuccess: () => {
@@ -142,17 +116,38 @@ const NavBar = () => {
     },
   });
 
-  // const locationsQuery = useQuery({
-  //   queryKey: ["locations"],
-  //   queryFn: fetchLocations,
-  // });
+  useQuery({
+    queryKey: ["locations"],
+    queryFn: async () => {
+      const regionsData = await apiRequest({
+        method: "POST",
+        endpoint: POST_REGIONS,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // @ts-ignore
+      setRegions(regionsData.data);
+      return regionsData;
+    },
+  });
 
-  // const PeriodsQuery = useQuery({
-  //   queryKey: ["periods"],
-  //   queryFn: fetchPeriods,
-  // });
+  useQuery({
+    queryKey: ["periods"],
+    queryFn: async () => {
+      const periodsData = await apiRequest({
+        method: "POST",
+        endpoint: POST_PLANS,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // @ts-ignore
+      setPeriods(periodsData.data);
+      return periodsData;
+    },
+  });
 
-  // Handle validation while typing
   const handleConfigNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfigName(value);
