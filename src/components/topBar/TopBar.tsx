@@ -2,7 +2,6 @@ import { BellIcon } from "@heroicons/react/24/outline";
 import IconBadge from "../badges/IconBadge";
 import Badge from "../badges/Badge";
 import useUserStore from "../../store/userStore";
-import DropdownMenu from "../dropdown/DropDownMenu";
 import Paragraph from "../typography/Paragraph";
 import { POST_USER_BALANCE } from "../../utils/endPoints";
 import { apiRequest } from "../../utils/apiProvider";
