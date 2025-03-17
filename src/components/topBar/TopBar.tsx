@@ -6,7 +6,7 @@ import DropdownMenu from "../dropdown/DropDownMenu";
 import Paragraph from "../typography/Paragraph";
 import { POST_USER_BALANCE } from "../../utils/endPoints";
 import { apiRequest } from "../../utils/apiProvider";
-import {  useEffect } from "react";
+import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -38,22 +38,20 @@ const TopBar = () => {
 
   return (
     <div className="flex justify-between">
-      <DropdownMenu
-        component={
-          <Badge className="flex min-w-[40px] min-h-[40px] gap-x-2 items-center">
-            <img
-              src={userInfo.photo_url ? userInfo.photo_url : "/nopf.jpg"}
-              className="size-8 object-fill rounded-full"
-              onError={(e) => {
-                // @ts-ignore
-                e.target.onerror = null;
-                // @ts-ignore
-                e.target.src = "/nopf.jpg";
-              }}
-            />
-          </Badge>
-        }
-      >
+      {" "}
+      <Badge className="flex min-w-[40px] min-h-[40px] gap-x-2 items-center">
+        <img
+          src={userInfo.photo_url ? userInfo.photo_url : "/nopf.jpg"}
+          className="size-8 object-fill rounded-full"
+          onError={(e) => {
+            // @ts-ignore
+            e.target.onerror = null;
+            // @ts-ignore
+            e.target.src = "/nopf.jpg";
+          }}
+        />
+      </Badge>
+      {/* <DropdownMenu component={}>
         <ul className="[&>li:not(:last-child)]:border-b [&>li]:border-secondary-100 [&>li]:py-1.5 [&>li]:px-3">
           {userInfo.first_name && <li>{userInfo.first_name}</li>}
 
@@ -65,8 +63,7 @@ const TopBar = () => {
             <Paragraph theme="error">حذف حساب</Paragraph>
           </li>
         </ul>
-      </DropdownMenu>
-
+      </DropdownMenu> */}
       <div className="flex items-center  gap-x-4">
         <Paragraph>
           {userInfo.balance
